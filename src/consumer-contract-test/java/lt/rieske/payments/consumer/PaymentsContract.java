@@ -1,54 +1,95 @@
 package lt.rieske.payments.consumer;
 
-import au.com.dius.pact.consumer.Pact;
 import au.com.dius.pact.consumer.PactProviderRuleMk2;
-import au.com.dius.pact.consumer.PactVerification;
-import au.com.dius.pact.consumer.dsl.PactDslWithProvider;
-import au.com.dius.pact.model.RequestResponsePact;
+import au.com.dius.pact.consumer.dsl.PactDslJsonBody;
 import org.junit.Rule;
-import org.junit.Test;
 
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.WebTarget;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
 import java.net.URI;
-
-import static org.assertj.core.api.Assertions.assertThat;
 
 public class PaymentsContract {
 
-    private static final String CONSUMER = "some-external-consumer";
+    protected static final String CONSUMER = "some-external-consumer";
+
+    protected static final String PAYMENTS_BASE_PATH = "/api/v1/payments/";
 
     @Rule
     public PactProviderRuleMk2 mockProvider = new PactProviderRuleMk2("payments-api", this);
 
-    @Pact(consumer = CONSUMER)
-    public RequestResponsePact getAllPaymentsWhenNoneExistContract(PactDslWithProvider builder) {
-        return builder
-          .uponReceiving("get all payments when none exist")
-          .path("/api/v1/payments")
-          .matchHeader("Accept", "application/json")
-          .method("GET")
-          .willRespondWith()
-          .status(200)
-          .body("[]")
-          .matchHeader("Content-Type", "application/json;charset=UTF-8")
-          .toPact();
-    }
-
-    @Test
-    @PactVerification(fragment = "getAllPaymentsWhenNoneExistContract")
-    public void getAllPaymentsWhenNoneExist() {
-        Response response = paymentsApi().path("/payments").request(MediaType.APPLICATION_JSON).get();
-
-        assertThat(response.getStatus()).isEqualTo(200);
-        assertThat(response.readEntity(String.class)).isEqualTo("[]");
-    }
-
-    private WebTarget paymentsApi() {
+    WebTarget paymentsApi() {
         return ClientBuilder.newClient()
           .target(URI.create("http://localhost:" + mockProvider.getPort()))
-          .path("/api/v1/");
+          .path(PAYMENTS_BASE_PATH);
+    }
+
+    PactDslJsonBody paymentSchema(String paymentId) {
+        // @formatter:off
+        return new PactDslJsonBody()
+          .stringType("type", "Payment")
+          .stringType("id", paymentId)
+          .integerType("version", 0)
+          .stringType("organisation_id", "743d5b63-8e6f-432e-a8fa-c5d8d2ee5fcb")
+          .object("attributes")
+            .stringType("amount", "42.00")
+            .stringType("currency", "GBP")
+            .stringType("end_to_end_reference", "Wil piano Jan")
+            .stringType("numeric_reference", "1002001")
+            .stringType("payment_id", "123456789012345678")
+            .stringType("payment_purpose", "Paying for goods/services")
+            .stringType("payment_scheme", "FPS")
+            .stringType("payment_type", "Credit")
+            .stringType("processing_date", "2017-01-18")
+            .stringType("reference", "Payment for Em's piano lessons")
+            .stringType("scheme_payment_sub_type", "InternetBanking")
+            .stringType("scheme_payment_type", "ImmediatePayment")
+            .object("beneficiary_party")
+                .stringType("account_name", "W Owens")
+                .stringType("account_number", "31926819")
+                .stringType("account_number_code", "BBAN")
+                .integerType("account_type", 0)
+                .stringType("address", "1 The Beneficiary Localtown SE2")
+                .stringType("bank_id", "403000")
+                .stringType("bank_id_code", "GBDSC")
+                .stringType("name", "Wilfred Jeremiah Owens")
+            .closeObject()
+            .object("charges_information")
+              .stringType("bearer_code", "SHAR")
+              .stringType("receiver_charges_amount", "1.00")
+              .stringType("receiver_charges_currency", "USD")
+              .array("sender_charges")
+                .object()
+                  .stringType("amount", "5.00")
+                  .stringType("currency", "GBP")
+                .closeObject()
+                .object()
+                  .stringType("amount", "10.00")
+                  .stringType("currency", "USD")
+                .closeObject()
+              .closeArray()
+            .closeObject()
+            .object("debtor_party")
+              .stringType("account_name", "EJ Brown Black")
+              .stringType("account_number", "GB29XABC10161234567801")
+              .stringType("account_number_code", "IBAN")
+              .stringType("address", "10 Debtor Crescent Sourcetown NE1")
+              .stringType("bank_id", "203301")
+              .stringType("bank_id_code", "GBDSC")
+              .stringType("name", "Emelia Jane Brown")
+            .closeObject()
+            .object("fx")
+              .stringType("contract_reference", "FX123")
+              .stringType("exchange_rate", "2.00000")
+              .stringType("original_amount", "200.42")
+              .stringType("original_currency", "USD")
+            .closeObject()
+            .object("sponsor_party")
+              .stringType("account_number", "56781234")
+              .stringType("bank_id", "123123")
+              .stringType("bank_id_code", "GBDSC")
+            .closeObject()
+          .closeObject()
+          .asBody();
+        // @formatter:on
     }
 }
