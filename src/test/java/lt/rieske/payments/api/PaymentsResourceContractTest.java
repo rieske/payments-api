@@ -16,7 +16,9 @@ import org.mockito.MockitoAnnotations;
 
 import java.util.Map;
 import java.util.Optional;
+import java.util.UUID;
 
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
 @RunWith(RestPactRunner.class)
@@ -34,6 +36,8 @@ public class PaymentsResourceContractTest {
     @Before
     public void setUpResource() {
         MockitoAnnotations.initMocks(this);
+
+        when(paymentsRepository.save(any())).thenReturn(UUID.randomUUID().toString());
 
         target.setControllers(resource);
     }
