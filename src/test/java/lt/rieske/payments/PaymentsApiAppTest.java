@@ -1,4 +1,4 @@
-package lt.rieske.payments.api;
+package lt.rieske.payments;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;

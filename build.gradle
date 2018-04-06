@@ -2,6 +2,8 @@ buildscript {
     ext {
         springCloudVersion = 'Finchley.M9'
         swaggerVersion = '2.8.0'
+        pactVersion = '3.5.14'
+        jerseyVersion = '2.26'
     }
     repositories {
         mavenCentral()
@@ -38,8 +40,24 @@ dependencyManagement {
     }
 }
 
+sourceSets {
+    consumerContractTest {
+        java.srcDir file('src/consumer-contract-test/java')
+        resources.srcDir file('src/consumer-contract-test/resources')
+    }
+}
+
 configurations {
+    consumerContractTest
     apt
+}
+
+task consumerContractTest(type: Test) {
+    // let's pretend those come from and are executed somewhere else by our consumer
+    description = 'Consumer Driven Contract tests'
+    testClassesDirs = sourceSets.consumerContractTest.output.classesDirs
+    classpath = sourceSets.consumerContractTest.runtimeClasspath
+    systemProperties['pact.rootDir'] = "$buildDir/pacts"
 }
 
 tasks.withType(JavaCompile) {
@@ -64,8 +82,16 @@ dependencies {
 
     testCompile 'javax.xml.bind:jaxb-api:2.3.0'
     testCompile 'org.springframework.boot:spring-boot-starter-test'
-    testCompile 'au.com.dius:pact-jvm-provider-spring_2.11:3.5.14'
+    testCompile "au.com.dius:pact-jvm-provider-spring_2.12:${pactVersion}"
+
+    consumerContractTestCompile "au.com.dius:pact-jvm-consumer-junit_2.12:${pactVersion}"
+    consumerContractTestCompile "org.glassfish.jersey.core:jersey-client:${jerseyVersion}"
+    consumerContractTestCompile "org.glassfish.jersey.inject:jersey-hk2:${jerseyVersion}"
+    consumerContractTestCompile 'com.fasterxml.jackson.core:jackson-core:2.9.5'
+    consumerContractTestCompile 'org.assertj:assertj-core:3.9.0'
 }
+
+test.dependsOn(consumerContractTest)
 
 task wrapper(type: Wrapper) {
     gradleVersion = '4.6'
