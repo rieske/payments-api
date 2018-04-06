@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<configuration>
+    <property resource="application.yml"/>
+
+    <appender name="stdout" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>%d{yyyy-MM-dd HH:mm:ss,SSS} [%t] %-5p %c [%X{correlationId}/%X{traceId}/%X{spanId}] - %m%n
+            </pattern>
+        </encoder>
+    </appender>
+
+    <appender name="jsonAppender" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${logging.path}/json.log</file>
+        <encoder class="net.logstash.logback.encoder.LogstashEncoder"/>
+        <rollingPolicy class="ch.qos.logback.core.rolling.FixedWindowRollingPolicy">
+            <maxIndex>1</maxIndex>
+            <fileNamePattern>${logging.path}.%i</fileNamePattern>
+        </rollingPolicy>
+        <triggeringPolicy class="ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy">
+            <MaxFileSize>100MB</MaxFileSize>
+        </triggeringPolicy>
+    </appender>
+
+    <logger name="root" level="INFO">
+        <appender-ref ref="jsonAppender"/>
+        <appender-ref ref="stdout"/>
+    </logger>
+</configuration>

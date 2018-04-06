@@ -1,0 +1,17 @@
+management:
+  endpoints.web:
+    base-path: /
+    path-mapping.health: healthcheck
+  endpoint.health.show-details: always
+  metrics.export.graphite:
+    port: 2003
+    protocol: Plaintext
+    step: PT10S
+
+logging.path: log
+
+spring:
+  application.name: payments-api
+  zipkin.baseUrl: ${ZIPKIN_URL:locallhost}
+  sleuth.sampler.probability: ${ZIPKIN_SAMPLE_RATE:0.1f}
+

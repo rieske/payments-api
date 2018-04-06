@@ -1,0 +1,72 @@
+buildscript {
+    ext {
+        springCloudVersion = 'Finchley.M9'
+        swaggerVersion = '2.8.0'
+    }
+    repositories {
+        mavenCentral()
+    }
+}
+
+plugins {
+    id 'java'
+    id 'application'
+    id 'org.springframework.boot' version '2.0.1.RELEASE'
+    id 'io.spring.dependency-management' version "1.0.5.RELEASE"
+}
+
+mainClassName = 'lt.rieske.payments.PaymentsApiApp'
+
+sourceCompatibility = 9
+
+bootJar {
+    archiveName = 'payments-api.jar'
+}
+
+repositories {
+    mavenCentral()
+    maven { url 'https://repo.spring.io/libs-milestone' }
+}
+
+test {
+    systemProperty('pact.provider.version', project.version)
+}
+
+dependencyManagement {
+    imports {
+        mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}"
+    }
+}
+
+configurations {
+    apt
+}
+
+tasks.withType(JavaCompile) {
+    options.annotationProcessorPath = configurations.apt
+}
+
+dependencies {
+    apt 'org.projectlombok:lombok:1.16.20'
+
+    compile 'org.springframework.boot:spring-boot-starter-web'
+    compile 'org.springframework.boot:spring-boot-starter-actuator'
+
+    compile 'org.springframework.cloud:spring-cloud-starter-sleuth'
+    compile 'org.springframework.cloud:spring-cloud-starter-zipkin'
+
+    compile "io.springfox:springfox-swagger2:${swaggerVersion}"
+    compile "io.springfox:springfox-swagger-ui:${swaggerVersion}"
+
+    compile 'io.micrometer:micrometer-registry-graphite:1.0.1'
+    compile 'net.logstash.logback:logstash-logback-encoder:5.0'
+    compile 'org.apache.commons:commons-lang3:3.6'
+
+    testCompile 'javax.xml.bind:jaxb-api:2.3.0'
+    testCompile 'org.springframework.boot:spring-boot-starter-test'
+    testCompile 'au.com.dius:pact-jvm-provider-spring_2.11:3.5.14'
+}
+
+task wrapper(type: Wrapper) {
+    gradleVersion = '4.6'
+}
