@@ -64,6 +64,5 @@ public class GetSinglePaymentContract extends PaymentsContract {
           .request(MediaType.APPLICATION_JSON).get();
 
         assertThat(response.getStatus()).isEqualTo(200);
-        System.out.println(response.readEntity(String.class));
     }
 }
