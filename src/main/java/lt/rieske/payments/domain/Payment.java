@@ -3,6 +3,7 @@ package lt.rieske.payments.domain;
 import lombok.Data;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.Currency;
 import java.util.List;
 
@@ -29,7 +30,7 @@ public class Payment {
         private final String paymentPurpose;
         private final String paymentScheme;
         private final String paymentType;
-        private final String processingDate; // FIXME
+        private final LocalDate processingDate;
         private final String reference;
         private final String schemePaymentType;
         private final String schemePaymentSubType;
