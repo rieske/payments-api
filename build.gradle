@@ -1,12 +1,18 @@
 buildscript {
     ext {
         springCloudVersion = 'Finchley.M9'
-        swaggerVersion = '2.8.0'
+        swaggerVersion = '2.6.1'
         pactVersion = '3.5.14'
         jerseyVersion = '2.26'
+        asciiDocOutputDir = file("${buildDir}/asciidoc/generated")
     }
     repositories {
         mavenCentral()
+        jcenter()
+    }
+    dependencies {
+        classpath 'org.asciidoctor:asciidoctor-gradle-plugin:1.5.6'
+        classpath 'org.asciidoctor:asciidoctorj-pdf:1.5.0-alpha.16'
     }
 }
 
@@ -14,8 +20,10 @@ plugins {
     id 'java'
     id 'application'
     id 'org.springframework.boot' version '2.0.1.RELEASE'
-    id 'io.spring.dependency-management' version "1.0.5.RELEASE"
+    id 'io.spring.dependency-management' version '1.0.5.RELEASE'
+    id 'org.asciidoctor.convert' version '1.5.6'
 }
+
 
 mainClassName = 'lt.rieske.payments.PaymentsApiApp'
 
@@ -28,10 +36,6 @@ bootJar {
 repositories {
     mavenCentral()
     maven { url 'https://repo.spring.io/libs-milestone' }
-}
-
-test {
-    systemProperty('pact.provider.version', project.version)
 }
 
 dependencyManagement {
@@ -60,6 +64,13 @@ task consumerContractTest(type: Test) {
     systemProperties['pact.rootDir'] = "$buildDir/pacts"
 }
 
+asciidoctor {
+    dependsOn test
+    sourceDir = asciiDocOutputDir
+    outputDir = file('build/docs')
+    backends = ['html5', 'pdf']
+}
+
 dependencies {
     apt 'org.projectlombok:lombok:1.16.20'
 
@@ -81,6 +92,7 @@ dependencies {
     testCompile 'javax.xml.bind:jaxb-api:2.3.0'
     testCompile 'org.springframework.boot:spring-boot-starter-test'
     testCompile "au.com.dius:pact-jvm-provider-spring_2.12:${pactVersion}"
+    testCompile "io.springfox:springfox-staticdocs:${swaggerVersion}"
 
     consumerContractTestCompile "au.com.dius:pact-jvm-consumer-junit_2.12:${pactVersion}"
     consumerContractTestCompile "org.glassfish.jersey.core:jersey-client:${jerseyVersion}"
