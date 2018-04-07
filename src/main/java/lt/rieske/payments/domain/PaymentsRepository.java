@@ -4,6 +4,7 @@ import org.apache.commons.lang3.NotImplementedException;
 import org.springframework.stereotype.Service;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -17,7 +18,7 @@ public class PaymentsRepository {
         throw new NotImplementedException("Not implemented!");
     }
 
-    public Collection<Payment> findAllPayments() {
+    public List<Payment> findAllPayments() {
         throw new NotImplementedException("Not implemented!");
     }
 }

@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
 import java.util.Collection;
+import java.util.List;
 
 import static lt.rieske.payments.api.PaymentsResource.RESOURCE_PATH;
 
@@ -22,12 +23,13 @@ public class PaymentsResource {
 
     private final PaymentsRepository paymentsRepository;
 
-    @GetMapping
-    public Collection<Payment> getAllPayments() {
+    @GetMapping(produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public List<Payment> getAllPayments() {
         return paymentsRepository.findAllPayments();
     }
 
     @PostMapping
+    @ResponseStatus(value = HttpStatus.CREATED)
     public ResponseEntity<Void> createPayment(@RequestBody Payment payment) {
         if (paymentsRepository.findPayment(payment.getId()).isPresent()) {
             return ResponseEntity.status(HttpStatus.CONFLICT).build();
@@ -45,12 +47,13 @@ public class PaymentsResource {
     }
 
     @DeleteMapping(path = "/{paymentId}")
-    public ResponseEntity<Void> deletePayment(@PathVariable String paymentId) {
+    @ResponseStatus(value = HttpStatus.NO_CONTENT)
+    public void deletePayment(@PathVariable String paymentId) {
 
-        return ResponseEntity.noContent().build();
     }
 
     @PatchMapping(path = "/{paymentId}")
+    @ResponseStatus(value = HttpStatus.NO_CONTENT)
     public ResponseEntity<Void> updatePayment(@PathVariable String paymentId, @RequestBody Payment payment) {
         if (!paymentsRepository.findPayment(paymentId).isPresent()) {
             return ResponseEntity.notFound().build();
