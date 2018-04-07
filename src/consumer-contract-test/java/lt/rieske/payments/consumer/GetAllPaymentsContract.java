@@ -6,6 +6,7 @@ import au.com.dius.pact.consumer.dsl.PactDslWithProvider;
 import au.com.dius.pact.model.RequestResponsePact;
 import org.junit.Test;
 
+import javax.ws.rs.HttpMethod;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
@@ -19,7 +20,7 @@ public class GetAllPaymentsContract extends PaymentsContract{
           .uponReceiving("get all payments when none exist")
           .path(PAYMENTS_BASE_PATH)
           .matchHeader("Accept", "application/json")
-          .method("GET")
+          .method(HttpMethod.GET)
           .willRespondWith()
           .status(200)
           .body("[]")

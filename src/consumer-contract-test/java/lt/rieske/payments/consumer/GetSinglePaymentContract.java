@@ -7,6 +7,7 @@ import au.com.dius.pact.consumer.dsl.PactDslWithProvider;
 import au.com.dius.pact.model.RequestResponsePact;
 import org.junit.Test;
 
+import javax.ws.rs.HttpMethod;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.math.BigDecimal;
@@ -24,7 +25,7 @@ public class GetSinglePaymentContract extends PaymentsContract {
           .uponReceiving("get single non existing payment")
           .path(PAYMENTS_BASE_PATH + nonExistingPaymentId)
           .matchHeader("Accept", "application/json")
-          .method("GET")
+          .method(HttpMethod.GET)
           .willRespondWith()
           .status(404)
           .toPact();
@@ -48,7 +49,7 @@ public class GetSinglePaymentContract extends PaymentsContract {
           .uponReceiving("get single payment")
           .path(PAYMENTS_BASE_PATH + existingPaymentId)
           .matchHeader("Accept", "application/json")
-          .method("GET")
+          .method(HttpMethod.GET)
           .willRespondWith()
           .status(200)
           .matchHeader("Content-Type", "application/json;charset=UTF-8")

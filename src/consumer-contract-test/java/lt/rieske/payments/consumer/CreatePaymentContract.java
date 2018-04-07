@@ -8,6 +8,7 @@ import org.apache.commons.codec.Charsets;
 import org.apache.commons.io.IOUtils;
 import org.junit.Test;
 
+import javax.ws.rs.HttpMethod;
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.core.Response;
 import java.io.IOException;
@@ -16,43 +17,40 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class CreatePaymentContract extends PaymentsContract {
 
-    private final String paymentId = "4ee3a8d8-ca7b-4290-a52c-dd5b6165ec43";
-
     @Pact(consumer = CONSUMER)
     public RequestResponsePact createNewPaymentContract(PactDslWithProvider builder) {
         return builder
           .uponReceiving("create new payment")
           .path(PAYMENTS_BASE_PATH)
           .matchHeader("Content-Type", "application/json")
-          .method("POST")
-          .body(paymentSchema(paymentId))
+          .method(HttpMethod.POST)
+          .body(paymentSchema(PAYMENT_ID))
           .willRespondWith()
           .status(201)
-          .matchHeader("Location", PAYMENTS_BASE_PATH + ".*", PAYMENTS_BASE_PATH + paymentId)
+          .matchHeader("Location", PAYMENTS_BASE_PATH + ".*", PAYMENTS_BASE_PATH + PAYMENT_ID)
           .toPact();
     }
 
     @Test
     @PactVerification(fragment = "createNewPaymentContract")
-    public void createsNewPayment() throws IOException {
-        String transactionJson = IOUtils.resourceToString("/transaction.json", Charsets.UTF_8);
+    public void createsNewPayment() {
 
         Response response = paymentsApi().request()
-          .post(Entity.json(transactionJson));
+          .post(Entity.json(TRANSACTION_JSON));
 
         assertThat(response.getStatus()).isEqualTo(201);
-        assertThat(response.getHeaderString("Location")).isEqualTo(PAYMENTS_BASE_PATH + paymentId);
+        assertThat(response.getHeaderString("Location")).isEqualTo(PAYMENTS_BASE_PATH + PAYMENT_ID);
     }
 
     @Pact(consumer = CONSUMER)
     public RequestResponsePact conflictWhenCreatingPaymentContract(PactDslWithProvider builder) {
         return builder
-          .given("payment exists", "paymentId", paymentId)
+          .given("payment exists", "paymentId", PAYMENT_ID)
           .uponReceiving("create new payment given one with same id already exists")
           .path(PAYMENTS_BASE_PATH)
           .matchHeader("Content-Type", "application/json")
-          .method("POST")
-          .body(paymentSchema(paymentId))
+          .method(HttpMethod.POST)
+          .body(paymentSchema(PAYMENT_ID))
           .willRespondWith()
           .status(409)
           .toPact();
@@ -60,11 +58,10 @@ public class CreatePaymentContract extends PaymentsContract {
 
     @Test
     @PactVerification(fragment = "conflictWhenCreatingPaymentContract")
-    public void conflictsGivenPaymentWithSameIdExists() throws IOException {
-        String transactionJson = IOUtils.resourceToString("/transaction.json", Charsets.UTF_8);
+    public void conflictsGivenPaymentWithSameIdExists() {
 
         Response response = paymentsApi().request()
-          .post(Entity.json(transactionJson));
+          .post(Entity.json(TRANSACTION_JSON));
 
         assertThat(response.getStatus()).isEqualTo(409);
         assertThat(response.readEntity(String.class)).isEmpty();

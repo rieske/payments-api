@@ -6,13 +6,7 @@ import lt.rieske.payments.domain.PaymentsRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseStatus;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
 import java.util.Collection;
@@ -34,12 +28,6 @@ public class PaymentsResource {
         return Collections.emptyList();
     }
 
-    @GetMapping(path = "/{paymentId}", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public String getPayment(@PathVariable String paymentId) {
-        return paymentsRepository.findPayment(paymentId)
-          .orElseThrow(PaymentNotFoundException::new);
-    }
-
     @PostMapping
     public ResponseEntity<Void> createPayment(@RequestBody Payment payment) {
         System.out.println(payment);
@@ -49,7 +37,33 @@ public class PaymentsResource {
 
         String paymentId = paymentsRepository.save(payment);
 
-        return ResponseEntity.created(URI.create(RESOURCE_PATH + "/" + paymentId)).build();
+        return ResponseEntity.created(resourceLocation(paymentId)).build();
+    }
+
+    @GetMapping(path = "/{paymentId}", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public String getPayment(@PathVariable String paymentId) {
+        return paymentsRepository.findPayment(paymentId)
+                .orElseThrow(PaymentNotFoundException::new);
+    }
+
+    @DeleteMapping(path = "/{paymentId}")
+    public ResponseEntity<Void> deletePayment(@PathVariable String paymentId) {
+
+        return ResponseEntity.noContent().build();
+    }
+
+    @PatchMapping(path = "/{paymentId}")
+    public ResponseEntity<Void> updatePayment(@PathVariable String paymentId, @RequestBody Payment payment) {
+        paymentsRepository.findPayment(paymentId).orElseThrow(PaymentNotFoundException::new);
+        if (!paymentId.equals(payment.getId())) {
+            return ResponseEntity.badRequest().build();
+        }
+
+        return ResponseEntity.noContent().location(resourceLocation(paymentId)).build();
+    }
+
+    private URI resourceLocation(String paymentId) {
+        return URI.create(RESOURCE_PATH + "/" + paymentId);
     }
 }
 

@@ -2,23 +2,45 @@ package lt.rieske.payments.consumer;
 
 import au.com.dius.pact.consumer.PactProviderRuleMk2;
 import au.com.dius.pact.consumer.dsl.PactDslJsonBody;
+import org.apache.commons.codec.Charsets;
+import org.apache.commons.io.IOUtils;
+import org.apache.http.client.HttpClient;
+import org.apache.http.impl.client.BasicCookieStore;
+import org.apache.http.impl.client.HttpClientBuilder;
+import org.glassfish.jersey.apache.connector.ApacheConnectorProvider;
+import org.glassfish.jersey.client.ClientConfig;
 import org.junit.Rule;
 
+import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.WebTarget;
+import java.io.IOException;
+import java.io.UncheckedIOException;
 import java.net.URI;
 
 public class PaymentsContract {
 
-    protected static final String CONSUMER = "some-external-consumer";
+    static final String CONSUMER = "some-external-consumer";
 
-    protected static final String PAYMENTS_BASE_PATH = "/api/v1/payments/";
+    static final String PAYMENTS_BASE_PATH = "/api/v1/payments/";
+
+    static final String PAYMENT_ID = "4ee3a8d8-ca7b-4290-a52c-dd5b6165ec43";
+
+    static final String TRANSACTION_JSON;
+
+    static {
+        try {
+            TRANSACTION_JSON = IOUtils.resourceToString("/transaction.json", Charsets.UTF_8);
+        } catch (IOException e) {
+            throw new UncheckedIOException(e);
+        }
+    }
 
     @Rule
     public PactProviderRuleMk2 mockProvider = new PactProviderRuleMk2("payments-api", this);
 
     WebTarget paymentsApi() {
-        return ClientBuilder.newClient()
+        return ClientBuilder.newClient(new ClientConfig().connectorProvider(new ApacheConnectorProvider()))
           .target(URI.create("http://localhost:" + mockProvider.getPort()))
           .path(PAYMENTS_BASE_PATH);
     }
