@@ -96,6 +96,8 @@ dependencies {
     testCompile 'org.springframework.boot:spring-boot-starter-test'
     testCompile "au.com.dius:pact-jvm-provider-spring_2.12:${pactVersion}"
     testCompile "io.springfox:springfox-staticdocs:${swaggerVersion}"
+    testCompile 'commons-io:commons-io:2.6'
+    testCompile 'org.skyscreamer:jsonassert:1.5.0'
 
     consumerContractTestCompile "au.com.dius:pact-jvm-consumer-junit_2.12:${pactVersion}"
     consumerContractTestCompile "org.glassfish.jersey.core:jersey-client:${jerseyVersion}"
