@@ -4,14 +4,10 @@ import au.com.dius.pact.consumer.PactProviderRuleMk2;
 import au.com.dius.pact.consumer.dsl.PactDslJsonBody;
 import org.apache.commons.codec.Charsets;
 import org.apache.commons.io.IOUtils;
-import org.apache.http.client.HttpClient;
-import org.apache.http.impl.client.BasicCookieStore;
-import org.apache.http.impl.client.HttpClientBuilder;
 import org.glassfish.jersey.apache.connector.ApacheConnectorProvider;
 import org.glassfish.jersey.client.ClientConfig;
 import org.junit.Rule;
 
-import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.WebTarget;
 import java.io.IOException;
@@ -41,13 +37,17 @@ public class PaymentsContract {
 
     WebTarget paymentsApi() {
         return ClientBuilder.newClient(new ClientConfig().connectorProvider(new ApacheConnectorProvider()))
-          .target(URI.create("http://localhost:" + mockProvider.getPort()))
-          .path(PAYMENTS_BASE_PATH);
+                .target(URI.create("http://localhost:" + mockProvider.getPort()))
+                .path(PAYMENTS_BASE_PATH);
     }
 
     PactDslJsonBody paymentSchema(String paymentId) {
+        return paymentSchema(paymentId, new PactDslJsonBody());
+    }
+
+    PactDslJsonBody paymentSchema(String paymentId, PactDslJsonBody dsl) {
         // @formatter:off
-        return new PactDslJsonBody()
+        return dsl
           .stringType("type", "Payment")
           .stringType("id", paymentId)
           .integerType("version", 0)

@@ -1,6 +1,8 @@
 package lt.rieske.payments.infrastructure.config;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import io.micrometer.core.instrument.MeterRegistry;
+import lt.rieske.payments.infrastructure.PaymentsObjectMapper;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.actuate.autoconfigure.metrics.MeterRegistryCustomizer;
@@ -32,4 +34,8 @@ public class ApplicationConfiguration {
           .build();
     }
 
+    @Bean
+    public ObjectMapper objectMapper() {
+        return new PaymentsObjectMapper();
+    }
 }

@@ -10,7 +10,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
 import java.util.Collection;
-import java.util.Collections;
 
 import static lt.rieske.payments.api.PaymentsResource.RESOURCE_PATH;
 
@@ -24,13 +23,12 @@ public class PaymentsResource {
     private final PaymentsRepository paymentsRepository;
 
     @GetMapping
-    public Collection<String> getAllPayments() {
-        return Collections.emptyList();
+    public Collection<Payment> getAllPayments() {
+        return paymentsRepository.findAllPayments();
     }
 
     @PostMapping
     public ResponseEntity<Void> createPayment(@RequestBody Payment payment) {
-        System.out.println(payment);
         if (paymentsRepository.findPayment(payment.getId()).isPresent()) {
             return ResponseEntity.status(HttpStatus.CONFLICT).build();
         }
@@ -41,9 +39,9 @@ public class PaymentsResource {
     }
 
     @GetMapping(path = "/{paymentId}", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public String getPayment(@PathVariable String paymentId) {
-        return paymentsRepository.findPayment(paymentId)
-                .orElseThrow(PaymentNotFoundException::new);
+    public ResponseEntity<Payment> getPayment(@PathVariable String paymentId) {
+        return paymentsRepository.findPayment(paymentId).map(ResponseEntity::ok)
+                .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
     @DeleteMapping(path = "/{paymentId}")
@@ -54,7 +52,9 @@ public class PaymentsResource {
 
     @PatchMapping(path = "/{paymentId}")
     public ResponseEntity<Void> updatePayment(@PathVariable String paymentId, @RequestBody Payment payment) {
-        paymentsRepository.findPayment(paymentId).orElseThrow(PaymentNotFoundException::new);
+        if (!paymentsRepository.findPayment(paymentId).isPresent()) {
+            return ResponseEntity.notFound().build();
+        }
         if (!paymentId.equals(payment.getId())) {
             return ResponseEntity.badRequest().build();
         }
@@ -65,8 +65,4 @@ public class PaymentsResource {
     private URI resourceLocation(String paymentId) {
         return URI.create(RESOURCE_PATH + "/" + paymentId);
     }
-}
-
-@ResponseStatus(value = HttpStatus.NOT_FOUND)
-class PaymentNotFoundException extends RuntimeException {
 }

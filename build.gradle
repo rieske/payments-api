@@ -4,6 +4,7 @@ buildscript {
         swaggerVersion = '2.6.1'
         pactVersion = '3.5.14'
         jerseyVersion = '2.26'
+        jacksonVersion = '2.9.5'
         asciiDocOutputDir = file("${buildDir}/asciidoc/generated")
     }
     repositories {
@@ -96,14 +97,15 @@ dependencies {
 
     consumerContractTestCompile "au.com.dius:pact-jvm-consumer-junit_2.12:${pactVersion}"
     consumerContractTestCompile "org.glassfish.jersey.core:jersey-client:${jerseyVersion}"
+    consumerContractTestCompile "org.glassfish.jersey.media:jersey-media-json-jackson:${jerseyVersion}"
     consumerContractTestCompile "org.glassfish.jersey.inject:jersey-hk2:${jerseyVersion}"
     consumerContractTestCompile "org.glassfish.jersey.connectors:jersey-apache-connector:${jerseyVersion}"
-    consumerContractTestCompile 'com.fasterxml.jackson.core:jackson-core:2.9.5'
+    consumerContractTestCompile "com.fasterxml.jackson.core:jackson-core:${jacksonVersion}"
+    consumerContractTestCompile "com.fasterxml.jackson.jaxrs:jackson-jaxrs-json-provider:${jacksonVersion}"
     consumerContractTestCompile 'org.assertj:assertj-core:3.9.0'
     consumerContractTestCompile 'org.slf4j:slf4j-log4j12:1.7.25'
     consumerContractTestCompile 'commons-io:commons-io:2.6'
-
-
+    consumerContractTestCompile 'javax.xml.bind:jaxb-api:2.3.0'
 }
 
 test.dependsOn(consumerContractTest)
