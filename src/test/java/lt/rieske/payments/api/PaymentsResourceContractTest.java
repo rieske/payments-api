@@ -9,23 +9,16 @@ import au.com.dius.pact.provider.junit.target.Target;
 import au.com.dius.pact.provider.junit.target.TestTarget;
 import au.com.dius.pact.provider.spring.SpringRestPactRunner;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import lt.rieske.payments.PaymentsObjectMapper;
 import lt.rieske.payments.domain.Payment;
 import lt.rieske.payments.domain.PaymentsRepository;
 import org.junit.After;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.jdbc.core.JdbcTemplate;
 
 import java.io.IOException;
-import java.util.Collections;
 import java.util.Map;
-import java.util.Optional;
-
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.when;
 
 @RunWith(SpringRestPactRunner.class)
 @Provider("payments-api")
@@ -36,7 +29,8 @@ import static org.mockito.Mockito.when;
 })
 public class PaymentsResourceContractTest {
 
-    private final ObjectMapper mapper = new PaymentsObjectMapper();
+    @Autowired
+    private ObjectMapper mapper;
 
     @Autowired
     private PaymentsRepository repository;

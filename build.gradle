@@ -4,6 +4,7 @@ buildscript {
         pactVersion = '3.5.14'
         jerseyVersion = '2.26'
         jacksonVersion = '2.9.5'
+        cucumberVersoin = '2.4.0'
         snippetsDir = file("${buildDir}/generated-snippets")
     }
     repositories {
@@ -98,6 +99,10 @@ dependencies {
     testCompile "au.com.dius:pact-jvm-provider-spring_2.12:${pactVersion}"
     testCompile 'commons-io:commons-io:2.6'
     testCompile 'org.skyscreamer:jsonassert:1.5.0'
+
+    testCompile "io.cucumber:cucumber-java8:${cucumberVersoin}"
+    testCompile "io.cucumber:cucumber-junit:${cucumberVersoin}"
+    testCompile "io.cucumber:cucumber-spring:${cucumberVersoin}"
 
     consumerContractTestCompile "au.com.dius:pact-jvm-consumer-junit_2.12:${pactVersion}"
     consumerContractTestCompile "org.glassfish.jersey.core:jersey-client:${jerseyVersion}"

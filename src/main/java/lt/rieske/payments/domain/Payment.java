@@ -9,6 +9,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Currency;
 import java.util.List;
+import java.util.UUID;
 
 import static javax.persistence.CascadeType.ALL;
 
@@ -61,7 +62,7 @@ public class Payment {
             @Id
             @GeneratedValue(generator = "uuid")
             @GenericGenerator(name = "uuid", strategy = "uuid2")
-            private String beneficiaryId;
+            private UUID beneficiaryId;
 
             private String accountName;
             private String accountNumber;
@@ -80,7 +81,7 @@ public class Payment {
             @Id
             @GeneratedValue(generator = "uuid")
             @GenericGenerator(name = "uuid", strategy = "uuid2")
-            private String debtorId;
+            private UUID debtorId;
 
             private String accountName;
             private String accountNumber;
@@ -108,7 +109,7 @@ public class Payment {
                 @Id
                 @GeneratedValue(generator = "uuid")
                 @GenericGenerator(name = "uuid", strategy = "uuid2")
-                private String chargeId;
+                private UUID chargeId;
 
                 private BigDecimal amount;
                 private Currency currency;
@@ -119,6 +120,7 @@ public class Payment {
         @Data
         public static class Forex {
             private String contractReference;
+            @Column(precision = 20, scale = 5)
             private BigDecimal exchangeRate;
             private BigDecimal originalAmount;
             private Currency originalCurrency;
@@ -131,7 +133,7 @@ public class Payment {
             @Id
             @GeneratedValue(generator = "uuid")
             @GenericGenerator(name = "uuid", strategy = "uuid2")
-            private String sponsorId;
+            private UUID sponsorId;
 
             private String accountNumber;
             private String bankId;

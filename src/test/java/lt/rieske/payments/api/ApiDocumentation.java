@@ -39,9 +39,6 @@ public class ApiDocumentation {
     private RestDocumentationResultHandler documentationHandler;
 
     @Autowired
-    private ObjectMapper objectMapper;
-
-    @Autowired
     private WebApplicationContext context;
 
     private MockMvc mockMvc;
