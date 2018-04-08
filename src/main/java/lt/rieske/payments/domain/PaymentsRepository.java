@@ -1,24 +1,9 @@
 package lt.rieske.payments.domain;
 
-import org.apache.commons.lang3.NotImplementedException;
-import org.springframework.stereotype.Service;
+import lt.rieske.payments.domain.Payment;
+import org.springframework.data.repository.CrudRepository;
+import org.springframework.data.rest.core.annotation.RepositoryRestResource;
 
-import java.util.Collection;
-import java.util.List;
-import java.util.Optional;
-
-@Service
-public class PaymentsRepository {
-
-    public Optional<Payment> findPayment(String paymentId) {
-        throw new NotImplementedException("Not implemented!");
-    }
-
-    public String save(Payment payment) {
-        throw new NotImplementedException("Not implemented!");
-    }
-
-    public List<Payment> findAllPayments() {
-        throw new NotImplementedException("Not implemented!");
-    }
+@RepositoryRestResource(collectionResourceRel = "payments", path = "payments")
+public interface PaymentsRepository extends CrudRepository<Payment, String> {
 }

@@ -16,6 +16,7 @@ public class DeletePaymentContract extends PaymentsContract {
     @Pact(consumer = CONSUMER)
     public RequestResponsePact deletePaymentContract(PactDslWithProvider builder) {
         return builder
+                .given("payment exists", "paymentId", PAYMENT_ID)
                 .uponReceiving("delete payment")
                 .path(PAYMENTS_BASE_PATH + PAYMENT_ID)
                 .method(HttpMethod.DELETE)
@@ -32,5 +33,26 @@ public class DeletePaymentContract extends PaymentsContract {
                 .request().delete();
 
         assertThat(response.getStatus()).isEqualTo(204);
+    }
+
+    @Pact(consumer = CONSUMER)
+    public RequestResponsePact deleteNonExistingPaymentContract(PactDslWithProvider builder) {
+        return builder
+                .uponReceiving("delete payment")
+                .path(PAYMENTS_BASE_PATH + PAYMENT_ID)
+                .method(HttpMethod.DELETE)
+                .willRespondWith()
+                .status(404)
+                .toPact();
+    }
+
+    @Test
+    @PactVerification(fragment = "deleteNonExistingPaymentContract")
+    public void deletesNonExistingPayment() {
+
+        Response response = paymentsApi().path(PAYMENT_ID)
+                .request().delete();
+
+        assertThat(response.getStatus()).isEqualTo(404);
     }
 }

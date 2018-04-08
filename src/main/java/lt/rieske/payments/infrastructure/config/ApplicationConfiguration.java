@@ -1,17 +1,24 @@
 package lt.rieske.payments.infrastructure.config;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.PropertyNamingStrategy;
+import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.databind.module.SimpleModule;
+import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import io.micrometer.core.instrument.MeterRegistry;
-import lt.rieske.payments.infrastructure.PaymentsObjectMapper;
+import lt.rieske.payments.domain.Payment;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.actuate.autoconfigure.metrics.MeterRegistryCustomizer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import springfox.documentation.builders.PathSelectors;
-import springfox.documentation.spi.DocumentationType;
-import springfox.documentation.spring.web.plugins.Docket;
+import org.springframework.data.rest.core.config.RepositoryRestConfiguration;
+import org.springframework.data.rest.webmvc.config.RepositoryRestConfigurer;
+import org.springframework.data.rest.webmvc.config.RepositoryRestConfigurerAdapter;
+import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
 
+import java.math.BigDecimal;
+import java.text.SimpleDateFormat;
 import java.util.Optional;
 
 @Configuration
@@ -27,16 +34,28 @@ public class ApplicationConfiguration {
     }
 
     @Bean
-    public Docket swaggerSpringMvcPlugin() {
-        return new Docket(DocumentationType.SWAGGER_2)
-                .useDefaultResponseMessages(false)
-                .select()
-                .paths(PathSelectors.regex("/api.*"))
-                .build();
+    public Jackson2ObjectMapperBuilder jacksonBuilder() {
+        Jackson2ObjectMapperBuilder jacksonBuilder = new Jackson2ObjectMapperBuilder();
+        jacksonBuilder.indentOutput(true).dateFormat(new SimpleDateFormat("yyyy-MM-dd"));
+
+        SimpleModule paymentsModule = new SimpleModule();
+        paymentsModule.addSerializer(BigDecimal.class, new ToStringSerializer());
+        jacksonBuilder.modules(new JavaTimeModule(), paymentsModule);
+        jacksonBuilder.featuresToDisable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+        jacksonBuilder.propertyNamingStrategy(PropertyNamingStrategy.SNAKE_CASE);
+
+        return jacksonBuilder;
     }
 
     @Bean
-    public ObjectMapper objectMapper() {
-        return new PaymentsObjectMapper();
+    public RepositoryRestConfigurer repositoryRestConfigurer() {
+
+        return new RepositoryRestConfigurerAdapter() {
+
+            @Override
+            public void configureRepositoryRestConfiguration(RepositoryRestConfiguration config) {
+                config.exposeIdsFor(Payment.class);
+            }
+        };
     }
 }

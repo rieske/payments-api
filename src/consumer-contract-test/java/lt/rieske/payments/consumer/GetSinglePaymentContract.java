@@ -16,14 +16,11 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class GetSinglePaymentContract extends PaymentsContract {
 
-    private final String nonExistingPaymentId = "some-non-existing-payment-id";
-    private final String existingPaymentId = "existing-payment-id";
-
     @Pact(consumer = CONSUMER)
     public RequestResponsePact getSingleNonExistingPaymentContract(PactDslWithProvider builder) {
         return builder
           .uponReceiving("get single non existing payment")
-          .path(PAYMENTS_BASE_PATH + nonExistingPaymentId)
+          .path(PAYMENTS_BASE_PATH + PAYMENT_ID)
           .matchHeader("Accept", "application/json")
           .method(HttpMethod.GET)
           .willRespondWith()
@@ -35,7 +32,7 @@ public class GetSinglePaymentContract extends PaymentsContract {
     @PactVerification(fragment = "getSingleNonExistingPaymentContract")
     public void returnsNotFoundWhenRequestedPaymentDoesNotExist() {
         Response response = paymentsApi()
-          .path(nonExistingPaymentId)
+          .path(PAYMENT_ID)
           .request(MediaType.APPLICATION_JSON).get();
 
         assertThat(response.getStatus()).isEqualTo(404);
@@ -45,15 +42,15 @@ public class GetSinglePaymentContract extends PaymentsContract {
     @Pact(consumer = CONSUMER)
     public RequestResponsePact getSinglePaymentContract(PactDslWithProvider builder) {
         return builder
-          .given("payment exists", "paymentId", existingPaymentId)
+          .given("payment exists", "paymentId", PAYMENT_ID)
           .uponReceiving("get single payment")
-          .path(PAYMENTS_BASE_PATH + existingPaymentId)
+          .path(PAYMENTS_BASE_PATH + PAYMENT_ID)
           .matchHeader("Accept", "application/json")
           .method(HttpMethod.GET)
           .willRespondWith()
           .status(200)
           .matchHeader("Content-Type", "application/json;charset=UTF-8")
-          .body(paymentSchema(existingPaymentId))
+          .body(paymentSchema(PAYMENT_ID))
           .toPact();
     }
 
@@ -61,7 +58,7 @@ public class GetSinglePaymentContract extends PaymentsContract {
     @PactVerification(fragment = "getSinglePaymentContract")
     public void returnsAnExistingPayment() {
         Response response = paymentsApi()
-          .path(existingPaymentId)
+          .path(PAYMENT_ID)
           .request(MediaType.APPLICATION_JSON).get();
 
         assertThat(response.getStatus()).isEqualTo(200);

@@ -1,4 +1,4 @@
-package lt.rieske.payments.infrastructure;
+package lt.rieske.payments;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.PropertyNamingStrategy;
@@ -9,6 +9,7 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
 import java.math.BigDecimal;
 
+// TODO: get rid of me
 public class PaymentsObjectMapper extends ObjectMapper {
     public PaymentsObjectMapper() {
         SimpleModule module = new SimpleModule();

@@ -1,19 +1,14 @@
 buildscript {
     ext {
         springCloudVersion = 'Finchley.M9'
-        swaggerVersion = '2.6.1'
         pactVersion = '3.5.14'
         jerseyVersion = '2.26'
         jacksonVersion = '2.9.5'
-        asciiDocOutputDir = file("${buildDir}/asciidoc/generated")
+        snippetsDir = file("${buildDir}/generated-snippets")
     }
     repositories {
         mavenCentral()
         jcenter()
-    }
-    dependencies {
-        classpath 'org.asciidoctor:asciidoctor-gradle-plugin:1.5.6'
-        classpath 'org.asciidoctor:asciidoctorj-pdf:1.5.0-alpha.16'
     }
 }
 
@@ -67,25 +62,30 @@ task consumerContractTest(type: Test) {
 
 asciidoctor {
     dependsOn test
-    sourceDir = asciiDocOutputDir
     outputDir = file('build/docs')
-    backends = ['html5', 'pdf']
+    backends = ['html5']
+    sourceDir 'src/main/asciidoc'
+    attributes \
+      'snippets': snippetsDir
 }
 
 dependencies {
     apt 'org.projectlombok:lombok:1.16.20'
 
+    asciidoctor "org.springframework.restdocs:spring-restdocs-asciidoctor:2.0.1.RELEASE"
+
     compile 'org.projectlombok:lombok:1.16.20'
 
     compile 'org.springframework.boot:spring-boot-starter-web'
     compile 'org.springframework.boot:spring-boot-starter-actuator'
+    compile 'org.springframework.boot:spring-boot-starter-data-jpa'
+    compile 'org.springframework.data:spring-data-rest-webmvc'
+    compile 'org.springframework.data:spring-data-rest-hal-browser'
+
+    compile 'com.h2database:h2'
 
     compile 'org.springframework.cloud:spring-cloud-starter-sleuth'
     compile 'org.springframework.cloud:spring-cloud-starter-zipkin'
-
-    compile "io.springfox:springfox-swagger2:${swaggerVersion}"
-    compile "io.springfox:springfox-bean-validators:${swaggerVersion}"
-    compile "io.springfox:springfox-swagger-ui:${swaggerVersion}"
 
     compile 'io.micrometer:micrometer-registry-graphite:1.0.1'
     compile 'net.logstash.logback:logstash-logback-encoder:5.0'
@@ -94,8 +94,8 @@ dependencies {
 
     testCompile 'javax.xml.bind:jaxb-api:2.3.0'
     testCompile 'org.springframework.boot:spring-boot-starter-test'
+    testCompile 'org.springframework.restdocs:spring-restdocs-mockmvc'
     testCompile "au.com.dius:pact-jvm-provider-spring_2.12:${pactVersion}"
-    testCompile "io.springfox:springfox-staticdocs:${swaggerVersion}"
     testCompile 'commons-io:commons-io:2.6'
     testCompile 'org.skyscreamer:jsonassert:1.5.0'
 

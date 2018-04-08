@@ -27,7 +27,7 @@ public class CreatePaymentContract extends PaymentsContract {
           .body(paymentSchema(PAYMENT_ID))
           .willRespondWith()
           .status(201)
-          .matchHeader("Location", PAYMENTS_BASE_PATH + ".*", PAYMENTS_BASE_PATH + PAYMENT_ID)
+          .matchHeader("Location", ".*" + PAYMENTS_BASE_PATH + ".*", PAYMENTS_BASE_PATH + PAYMENT_ID)
           .toPact();
     }
 
@@ -40,30 +40,5 @@ public class CreatePaymentContract extends PaymentsContract {
 
         assertThat(response.getStatus()).isEqualTo(201);
         assertThat(response.getHeaderString("Location")).isEqualTo(PAYMENTS_BASE_PATH + PAYMENT_ID);
-    }
-
-    @Pact(consumer = CONSUMER)
-    public RequestResponsePact conflictWhenCreatingPaymentContract(PactDslWithProvider builder) {
-        return builder
-          .given("payment exists", "paymentId", PAYMENT_ID)
-          .uponReceiving("create new payment given one with same id already exists")
-          .path(PAYMENTS_BASE_PATH)
-          .matchHeader("Content-Type", "application/json")
-          .method(HttpMethod.POST)
-          .body(paymentSchema(PAYMENT_ID))
-          .willRespondWith()
-          .status(409)
-          .toPact();
-    }
-
-    @Test
-    @PactVerification(fragment = "conflictWhenCreatingPaymentContract")
-    public void conflictsGivenPaymentWithSameIdExists() {
-
-        Response response = paymentsApi().request()
-          .post(Entity.json(TRANSACTION_JSON));
-
-        assertThat(response.getStatus()).isEqualTo(409);
-        assertThat(response.readEntity(String.class)).isEmpty();
     }
 }

@@ -12,6 +12,7 @@ logging.path: log
 
 spring:
   application.name: payments-api
+  data.rest.base-path: /api/v1
   zipkin.baseUrl: ${ZIPKIN_URL:locallhost}
   sleuth.sampler.probability: ${ZIPKIN_SAMPLE_RATE:0.1f}
 

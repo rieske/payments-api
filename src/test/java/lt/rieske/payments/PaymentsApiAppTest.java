@@ -31,21 +31,5 @@ public class PaymentsApiAppTest {
         ResponseEntity<String> response = restTemplate.getForEntity("/healthcheck", String.class);
 
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
-        assertThat(response.getBody()).startsWith("{\"status\":\"UP\"");
-    }
-
-    @Test
-    public void swaggerApiIsExposed() {
-        ResponseEntity<String> response = restTemplate.getForEntity("/v2/api-docs", String.class);
-
-        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
-        assertThat(response.getBody()).startsWith("{\"swagger\":\"2.0\"");
-    }
-
-    @Test
-    public void swaggerUiIsExposed() {
-        ResponseEntity<String> response = restTemplate.getForEntity("/swagger-ui.html", String.class);
-
-        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
     }
 }

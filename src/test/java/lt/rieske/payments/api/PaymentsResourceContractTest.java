@@ -1,72 +1,67 @@
 package lt.rieske.payments.api;
 
 import au.com.dius.pact.provider.junit.Provider;
-import au.com.dius.pact.provider.junit.RestPactRunner;
 import au.com.dius.pact.provider.junit.State;
 import au.com.dius.pact.provider.junit.VerificationReports;
 import au.com.dius.pact.provider.junit.loader.PactFolder;
+import au.com.dius.pact.provider.junit.target.HttpTarget;
+import au.com.dius.pact.provider.junit.target.Target;
 import au.com.dius.pact.provider.junit.target.TestTarget;
-import au.com.dius.pact.provider.spring.target.MockMvcTarget;
+import au.com.dius.pact.provider.spring.SpringRestPactRunner;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import lt.rieske.payments.PaymentsObjectMapper;
 import lt.rieske.payments.domain.Payment;
 import lt.rieske.payments.domain.PaymentsRepository;
-import lt.rieske.payments.infrastructure.PaymentsObjectMapper;
-import org.junit.Before;
+import org.junit.After;
 import org.junit.runner.RunWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
-import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.jdbc.core.JdbcTemplate;
 
 import java.io.IOException;
 import java.util.Collections;
 import java.util.Map;
 import java.util.Optional;
-import java.util.UUID;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
-@RunWith(RestPactRunner.class)
+@RunWith(SpringRestPactRunner.class)
 @Provider("payments-api")
 @PactFolder("build/pacts")
 @VerificationReports({"console", "markdown"})
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT, properties = {
+        "server.port=8888"
+})
 public class PaymentsResourceContractTest {
 
     private final ObjectMapper mapper = new PaymentsObjectMapper();
 
-    @Mock
-    private PaymentsRepository paymentsRepository;
+    @Autowired
+    private PaymentsRepository repository;
 
-    @InjectMocks
-    private PaymentsResource resource;
-
-    @Before
-    public void setUpResource() {
-        MockitoAnnotations.initMocks(this);
-
-        when(paymentsRepository.save(any())).thenReturn(UUID.randomUUID().toString());
-
-        target.setControllers(resource);
-
-        MappingJackson2HttpMessageConverter converter = new MappingJackson2HttpMessageConverter();
-        converter.setObjectMapper(mapper);
-        target.setMessageConverters(Collections.singletonList(converter));
-    }
+    @Autowired
+    private JdbcTemplate jdbcTemplate;
 
     @TestTarget
-    public final MockMvcTarget target = new MockMvcTarget();
+    public final Target target = new HttpTarget(8888);
+
+    @After
+    public void deleteTestData() {
+        repository.deleteAll();
+    }
 
     @State("payment exists")
     public void givenPaymentExists(Map<String, String> state) throws IOException {
         String paymentId = state.get("paymentId");
         Payment payment = validPayment(paymentId);
-
-        when(paymentsRepository.findAllPayments()).thenReturn(Collections.singletonList(payment));
-        when(paymentsRepository.findPayment(paymentId)).thenReturn(Optional.of(payment));
+        repository.save(payment);
     }
 
     private Payment validPayment(String paymentId) throws IOException {
-        return mapper.readValue(getClass().getResourceAsStream("/fixtures/transaction.json"), Payment.class);
+        Payment payment = mapper.readValue(getClass().getResourceAsStream("/fixtures/transaction.json"), Payment.class);
+        payment.setId(paymentId);
+        return payment;
     }
 }

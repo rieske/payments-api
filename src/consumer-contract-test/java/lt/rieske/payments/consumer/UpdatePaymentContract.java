@@ -26,7 +26,6 @@ public class UpdatePaymentContract extends PaymentsContract {
                 .body(paymentSchema(PAYMENT_ID))
                 .willRespondWith()
                 .status(204)
-                .matchHeader("Location", PAYMENTS_BASE_PATH + ".*", PAYMENTS_BASE_PATH + PAYMENT_ID)
                 .toPact();
     }
 
@@ -39,7 +38,6 @@ public class UpdatePaymentContract extends PaymentsContract {
 
         assertThat(response.getStatus()).isEqualTo(204);
         assertThat(response.readEntity(String.class)).isEmpty();
-        assertThat(response.getHeaderString("Location")).isEqualTo(PAYMENTS_BASE_PATH + PAYMENT_ID);
     }
 
     @Pact(consumer = CONSUMER)
@@ -69,28 +67,4 @@ public class UpdatePaymentContract extends PaymentsContract {
 
     private final String differentExistingPaymentId = UUID.randomUUID().toString();
 
-    @Pact(consumer = CONSUMER)
-    public RequestResponsePact badRequestWhenUpdatingPaymentIdContract(PactDslWithProvider builder) {
-        return builder
-                .given("payment exists", "paymentId", differentExistingPaymentId)
-                .uponReceiving("update a payment with a changed id in request")
-                .path(PAYMENTS_BASE_PATH + differentExistingPaymentId)
-                .matchHeader("Content-Type", "application/json")
-                .method(HttpMethod.PATCH)
-                .body(paymentSchema(PAYMENT_ID))
-                .willRespondWith()
-                .status(400)
-                .toPact();
-    }
-
-    @Test
-    @PactVerification(fragment = "badRequestWhenUpdatingPaymentIdContract")
-    public void badRequestWhenUpdatingPaymentId() {
-
-        Response response = paymentsApi().path(differentExistingPaymentId)
-                .request().method(HttpMethod.PATCH, Entity.json(TRANSACTION_JSON));
-
-        assertThat(response.getStatus()).isEqualTo(400);
-        assertThat(response.readEntity(String.class)).isEmpty();
-    }
 }

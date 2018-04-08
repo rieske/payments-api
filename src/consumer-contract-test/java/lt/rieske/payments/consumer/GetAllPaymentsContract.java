@@ -3,6 +3,7 @@ package lt.rieske.payments.consumer;
 import au.com.dius.pact.consumer.Pact;
 import au.com.dius.pact.consumer.PactVerification;
 import au.com.dius.pact.consumer.dsl.PactDslJsonArray;
+import au.com.dius.pact.consumer.dsl.PactDslJsonBody;
 import au.com.dius.pact.consumer.dsl.PactDslWithProvider;
 import au.com.dius.pact.model.RequestResponsePact;
 import org.junit.Test;
@@ -26,7 +27,13 @@ public class GetAllPaymentsContract extends PaymentsContract {
                 .method(HttpMethod.GET)
                 .willRespondWith()
                 .status(200)
-                .body(paymentSchema(PAYMENT_ID, new PactDslJsonArray().object()).closeObject().asArray())
+                .body(paymentSchema(PAYMENT_ID, new PactDslJsonBody()
+                        .object("_embedded")
+                        .array("payments").object())
+                        .closeObject()
+                        .closeArray()
+                        .closeObject()
+                        .asBody())
                 .matchHeader("Content-Type", "application/json;charset=UTF-8")
                 .toPact();
     }
@@ -37,7 +44,6 @@ public class GetAllPaymentsContract extends PaymentsContract {
         Response response = paymentsApi().request(MediaType.APPLICATION_JSON).get();
 
         assertThat(response.getStatus()).isEqualTo(200);
-        assertThat(response.readEntity(List.class)).hasSize(1);
     }
 
     @Pact(consumer = CONSUMER)
@@ -49,7 +55,11 @@ public class GetAllPaymentsContract extends PaymentsContract {
                 .method(HttpMethod.GET)
                 .willRespondWith()
                 .status(200)
-                .body("[]")
+                .body(new PactDslJsonBody()
+                        .object("_embedded")
+                        .array("payments").closeArray()
+                        .closeObject()
+                        .asBody())
                 .matchHeader("Content-Type", "application/json;charset=UTF-8")
                 .toPact();
     }
@@ -60,6 +70,6 @@ public class GetAllPaymentsContract extends PaymentsContract {
         Response response = paymentsApi().request(MediaType.APPLICATION_JSON).get();
 
         assertThat(response.getStatus()).isEqualTo(200);
-        assertThat(response.readEntity(List.class)).isEmpty();
     }
+
 }
