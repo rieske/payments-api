@@ -18,7 +18,7 @@ public class Payment {
 
     @Id
     @GeneratedValue(generator = "idGenerator")
-    @GenericGenerator(name = "idGenerator", strategy = "lt.rieske.payments.infrastructure.IdGenerator")
+    @GenericGenerator(name = "idGenerator", strategy = "lt.rieske.payments.infrastructure.OnlyIfAbsentIdGenerator")
     @Column(unique = true, nullable = false)
     private String id;
     private String type;

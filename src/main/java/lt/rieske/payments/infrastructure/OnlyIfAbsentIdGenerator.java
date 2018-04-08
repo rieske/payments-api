@@ -7,8 +7,8 @@ import org.hibernate.id.UUIDGenerator;
 
 import java.io.Serializable;
 
-public class IdGenerator extends UUIDGenerator implements IdentifierGenerator {
-
+public class OnlyIfAbsentIdGenerator extends UUIDGenerator implements IdentifierGenerator {
+    
     @Override
     public Serializable generate(SharedSessionContractImplementor session, Object object) throws HibernateException {
         Serializable id = session.getEntityPersister(null, object)
