@@ -106,6 +106,7 @@ dependencies {
     compile 'org.apache.commons:commons-lang3:3.6'
 
     compile 'org.postgresql:postgresql:42.2.2'
+    compile 'org.flywaydb:flyway-core'
 
     testCompile 'javax.xml.bind:jaxb-api:2.3.0'
     testCompile 'org.springframework.boot:spring-boot-starter-test'

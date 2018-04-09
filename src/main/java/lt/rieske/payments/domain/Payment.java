@@ -3,7 +3,16 @@ package lt.rieske.payments.domain;
 import lombok.Data;
 import org.hibernate.annotations.GenericGenerator;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Embeddable;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.JoinTable;
+import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
+import javax.persistence.Table;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -13,8 +22,9 @@ import java.util.UUID;
 
 import static javax.persistence.CascadeType.ALL;
 
-@Entity
 @Data
+@Entity
+@Table(name = "payment")
 public class Payment {
 
     @Id
@@ -55,8 +65,9 @@ public class Payment {
         private String schemePaymentType;
         private String schemePaymentSubType;
 
-        @Entity
         @Data
+        @Entity
+        @Table(name = "beneficiary")
         public static class Beneficiary {
 
             @Id
@@ -74,8 +85,9 @@ public class Payment {
             private String name;
         }
 
-        @Entity
         @Data
+        @Entity
+        @Table(name = "debtor")
         public static class Debtor {
 
             @Id
@@ -99,11 +111,12 @@ public class Payment {
             private BigDecimal receiverChargesAmount;
             private Currency receiverChargesCurrency;
 
-            @OneToMany(cascade = ALL, fetch = FetchType.EAGER)
+            @OneToMany(cascade = ALL, fetch = FetchType.EAGER, orphanRemoval = true)
             private List<Charge> senderCharges = new ArrayList<>();
 
             @Entity
             @Data
+            @Table(name = "charge")
             public static class Charge {
 
                 @Id
@@ -128,6 +141,7 @@ public class Payment {
 
         @Entity
         @Data
+        @Table(name = "sponsor")
         public static class Sponsor {
 
             @Id
