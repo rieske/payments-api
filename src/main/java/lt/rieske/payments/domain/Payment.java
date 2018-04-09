@@ -99,7 +99,7 @@ public class Payment {
             private BigDecimal receiverChargesAmount;
             private Currency receiverChargesCurrency;
 
-            @OneToMany(cascade = ALL)
+            @OneToMany(cascade = ALL, fetch = FetchType.EAGER)
             private List<Charge> senderCharges = new ArrayList<>();
 
             @Entity
