@@ -1,6 +1,7 @@
 buildscript {
     ext {
         springCloudVersion = 'Finchley.M9'
+        lombokVersion = '1.16.20'
         pactVersion = '3.5.14'
         jerseyVersion = '2.26'
         jacksonVersion = '2.9.5'
@@ -33,6 +34,7 @@ bootJar {
 repositories {
     mavenCentral()
     maven { url 'https://repo.spring.io/libs-milestone' }
+    maven { url 'https://dl.bintray.com/palantir/releases' }
 }
 
 dependencyManagement {
@@ -46,10 +48,15 @@ sourceSets {
         java.srcDir file('src/consumer-contract-test/java')
         resources.srcDir file('src/consumer-contract-test/resources')
     }
+    componentTest {
+        java.srcDir file('src/component-test/java')
+        resources.srcDir file('src/component-test/resources')
+    }
 }
 
 configurations {
     consumerContractTest
+    componentTest
     apt
 }
 
@@ -59,6 +66,13 @@ task consumerContractTest(type: Test) {
     testClassesDirs = sourceSets.consumerContractTest.output.classesDirs
     classpath = sourceSets.consumerContractTest.runtimeClasspath
     systemProperties['pact.rootDir'] = "$buildDir/pacts"
+}
+
+task componentTest(type: Test) {
+    description = 'Component tests'
+    testClassesDirs = sourceSets.componentTest.output.classesDirs
+    classpath = sourceSets.componentTest.runtimeClasspath
+    outputs.upToDateWhen { false }
 }
 
 asciidoctor {
@@ -71,19 +85,17 @@ asciidoctor {
 }
 
 dependencies {
-    apt 'org.projectlombok:lombok:1.16.20'
+    apt "org.projectlombok:lombok:${lombokVersion}"
 
     asciidoctor "org.springframework.restdocs:spring-restdocs-asciidoctor:2.0.1.RELEASE"
 
-    compile 'org.projectlombok:lombok:1.16.20'
+    compileOnly "org.projectlombok:lombok:${lombokVersion}"
 
     compile 'org.springframework.boot:spring-boot-starter-web'
     compile 'org.springframework.boot:spring-boot-starter-actuator'
     compile 'org.springframework.boot:spring-boot-starter-data-jpa'
     compile 'org.springframework.data:spring-data-rest-webmvc'
     compile 'org.springframework.data:spring-data-rest-hal-browser'
-
-    compile 'com.h2database:h2'
 
     compile 'org.springframework.cloud:spring-cloud-starter-sleuth'
     compile 'org.springframework.cloud:spring-cloud-starter-zipkin'
@@ -93,12 +105,15 @@ dependencies {
     compile "com.fasterxml.jackson.datatype:jackson-datatype-jsr310:${jacksonVersion}"
     compile 'org.apache.commons:commons-lang3:3.6'
 
+    compile 'org.postgresql:postgresql:42.2.2'
+
     testCompile 'javax.xml.bind:jaxb-api:2.3.0'
     testCompile 'org.springframework.boot:spring-boot-starter-test'
     testCompile 'org.springframework.restdocs:spring-restdocs-mockmvc'
     testCompile "au.com.dius:pact-jvm-provider-spring_2.12:${pactVersion}"
     testCompile 'commons-io:commons-io:2.6'
     testCompile 'org.skyscreamer:jsonassert:1.5.0'
+    testCompile 'com.h2database:h2'
 
     testCompile "io.cucumber:cucumber-java8:${cucumberVersoin}"
     testCompile "io.cucumber:cucumber-junit:${cucumberVersoin}"
@@ -115,9 +130,13 @@ dependencies {
     consumerContractTestCompile 'org.slf4j:slf4j-log4j12:1.7.25'
     consumerContractTestCompile 'commons-io:commons-io:2.6'
     consumerContractTestCompile 'javax.xml.bind:jaxb-api:2.3.0'
+
+    componentTestCompile 'com.palantir.docker.compose:docker-compose-rule-junit4:0.33.0'
 }
 
 test.dependsOn(consumerContractTest)
+componentTest.dependsOn(jar)
+build.dependsOn(componentTest)
 
 task wrapper(type: Wrapper) {
     gradleVersion = '4.6'

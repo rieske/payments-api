@@ -17,3 +17,8 @@ spring:
   zipkin.baseUrl: ${ZIPKIN_URL:locallhost}
   sleuth.sampler.probability: ${ZIPKIN_SAMPLE_RATE:0.1f}
 
+  datasource:
+    url: ${DATABASE_URL}/payments-db
+    username: ${DATABASE_USER}
+    password: ${DATABASE_PASSWORD}
+  jpa.hibernate.ddl-auto: create-drop

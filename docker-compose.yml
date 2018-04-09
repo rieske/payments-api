@@ -1,7 +1,14 @@
 ---
-version: "2.0"
+version: "3.3"
 
 services:
+
+  db:
+    image: postgres:10.3-alpine
+    environment:
+      POSTGRES_DB: payments-db
+      POSTGRES_USER: payments-user
+      POSTGRES_PASSWORD: payments-password
 
   payments-api:
     build: .
@@ -9,6 +16,11 @@ services:
     - 8080:8080
     - 1099:1099
     - 5005:5005
+    links:
+      - db
     environment:
-    - JAVA_OPTS=-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5005
-    - JMX_PORT=1099
+     JAVA_OPTS: -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5005
+     JMX_PORT: 1099
+     DATABASE_URL: jdbc:postgresql://db:5432
+     DATABASE_USER: payments-user
+     DATABASE_PASSWORD: payments-password
