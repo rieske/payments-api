@@ -21,16 +21,14 @@ import org.springframework.web.context.WebApplicationContext;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.hamcrest.Matchers.contains;
-import static org.hamcrest.Matchers.equalTo;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.documentationConfiguration;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.preprocessRequest;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.preprocessResponse;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.prettyPrint;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -85,7 +83,7 @@ public abstract class SpringBootSteps {
 
     void paymentWithIdExists(String fixture, String paymentId) throws IOException {
         Payment payment = readPaymentFromFixture(fixture);
-        payment.setId(paymentId);
+        payment.setId(UUID.fromString(paymentId));
         paymentsRepository.save(payment);
     }
 
@@ -94,7 +92,7 @@ public abstract class SpringBootSteps {
     }
 
     void assertPaymentDoesNotExist(String paymentId) {
-        assertThat(paymentsRepository.findById(paymentId)).isEmpty();
+        assertThat(paymentsRepository.findById(UUID.fromString(paymentId))).isEmpty();
     }
 
     void get(String path, String contentType) throws Exception {

@@ -19,6 +19,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 
 import java.io.IOException;
 import java.util.Map;
+import java.util.UUID;
 
 @RunWith(SpringRestPactRunner.class)
 @Provider("payments-api")
@@ -48,12 +49,12 @@ public class PaymentsResourceContractTest {
 
     @State("payment exists")
     public void givenPaymentExists(Map<String, String> state) throws IOException {
-        String paymentId = state.get("paymentId");
+        UUID paymentId = UUID.fromString(state.get("paymentId"));
         Payment payment = validPayment(paymentId);
         repository.save(payment);
     }
 
-    private Payment validPayment(String paymentId) throws IOException {
+    private Payment validPayment(UUID paymentId) throws IOException {
         Payment payment = mapper.readValue(getClass().getResourceAsStream("/fixtures/transaction.json"), Payment.class);
         payment.setId(paymentId);
         return payment;

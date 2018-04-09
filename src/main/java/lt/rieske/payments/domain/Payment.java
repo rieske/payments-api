@@ -21,7 +21,7 @@ public class Payment {
     @GeneratedValue(generator = "idGenerator")
     @GenericGenerator(name = "idGenerator", strategy = "lt.rieske.payments.infrastructure.OnlyIfAbsentIdGenerator")
     @Column(unique = true, nullable = false)
-    private String id;
+    private UUID id;
     private String type;
     private int version;
     private String organisationId;
