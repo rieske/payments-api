@@ -4,6 +4,7 @@ Feature: get payment resource
     Given payment with id "paymentId" does not exist
     When the client issues a GET "/api/v1/payments/paymentId" requesting "application/json"
     Then the client receives status code of 404
+    And the response body is empty
 
   Scenario: client issues a GET to /api/v1/payments/{payment-id} for existing payment id
     Given payment "payment.json" exists with id "paymentId"

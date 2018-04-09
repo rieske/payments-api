@@ -111,6 +111,10 @@ public abstract class SpringBootSteps {
         resultActions = mockMvc.perform(MockMvcRequestBuilders.post(resourcePath).content(content).accept(contentType));
     }
 
+    void delete(String resourcePath) throws Exception {
+        resultActions = mockMvc.perform(MockMvcRequestBuilders.delete(resourcePath));
+    }
+
     void assertHttpStatus(int statusCode) throws Exception {
         resultActions.andExpect(status().is(statusCode));
     }
@@ -138,7 +142,7 @@ public abstract class SpringBootSteps {
           .andExpect(MockMvcResultMatchers.jsonPath("$._embedded.payments").isEmpty());
     }
 
-    public void assertResponseBodyContainsPayments(String fixture) throws Exception {
+    void assertResponseBodyContainsPayments(String fixture) throws Exception {
         String expectedContent = readFixtureAsString(fixture);
         String returnedContent = resultActions
           .andExpect(MockMvcResultMatchers.jsonPath("$._embedded.payments").isArray())
