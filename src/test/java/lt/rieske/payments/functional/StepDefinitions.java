@@ -1,5 +1,6 @@
 package lt.rieske.payments.functional;
 
+import cucumber.api.PendingException;
 import cucumber.api.java.After;
 import cucumber.api.java.Before;
 import cucumber.api.java8.En;
@@ -40,6 +41,8 @@ public class StepDefinitions extends SpringBootSteps implements En {
         And("^the response body contains resource matching \"([^\"]*)\"$", super::assertResponseBodyMatchesFixture);
         And("^the response body contains an empty list of payments$", super::assertResponseBodyContainsAnEmptyListOfPayments);
         And("^the response body contains a list of payments matching \"([^\"]*)\"$", super::assertResponseBodyContainsPayments);
+
+        And("^the interaction is documented as \"([^\"]*)\"$", this::documentInteraction);
     }
 
 }

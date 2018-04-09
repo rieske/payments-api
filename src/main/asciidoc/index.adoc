@@ -1,11 +1,81 @@
-= Getting Started With Spring REST Docs
+= Payments API
+:toc: left
 
-This is an example output for a service running at http://localhost:8080:
+== Overview
+
+
+
+== Operations
+
+'''
+=== Create payment
+
+==== Without requesting content
 
 .request
-include::{snippets}/index/http-request.adoc[]
+include::{snippets}/create-payment/http-request.adoc[]
 
 .response
-include::{snippets}/index/http-response.adoc[]
+include::{snippets}/create-payment/http-response.adoc[]
 
-As you can see the format is very simple, and in fact you always get the same message.
+==== requesting a JSON response
+
+.request
+include::{snippets}/create-payment-with-response/http-request.adoc[]
+
+.response
+include::{snippets}/create-payment-with-response/http-response.adoc[]
+
+
+'''
+=== Get payment
+
+.request
+include::{snippets}/get-payment/http-request.adoc[]
+
+.response
+include::{snippets}/get-payment/http-response.adoc[]
+
+
+'''
+=== Get all payments
+
+.request
+include::{snippets}/get-all-payments/http-request.adoc[]
+
+.response
+include::{snippets}/get-all-payments/http-response.adoc[]
+
+
+'''
+=== Update payment
+
+==== Without requesting content
+
+.request
+include::{snippets}/update-payment/http-request.adoc[]
+
+.response
+include::{snippets}/update-payment/http-response.adoc[]
+
+==== requesting a JSON response
+
+.request
+include::{snippets}/update-payment-with-response/http-request.adoc[]
+
+.response
+include::{snippets}/update-payment-with-response/http-response.adoc[]
+
+
+'''
+=== Delete payment
+
+.request
+include::{snippets}/delete-payment/http-request.adoc[]
+
+.response
+include::{snippets}/delete-payment/http-response.adoc[]
+
+
+'''
+== Definitions

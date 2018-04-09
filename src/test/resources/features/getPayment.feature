@@ -12,3 +12,4 @@ Feature: get payment resource
     Then the client receives status code of 200
     And response contains "Content-Type" header with value "application/json;charset=UTF-8"
     And the response body contains resource matching "payment.json"
+    And the interaction is documented as "get-payment"

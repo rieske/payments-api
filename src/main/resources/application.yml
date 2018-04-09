@@ -4,6 +4,7 @@ management:
     path-mapping.health: healthcheck
   endpoint.health.show-details: always
   metrics.export.graphite:
+    enabled: ${METRICS_EXPORT_ENABLED:false}
     port: 2003
     protocol: Plaintext
     step: PT10S

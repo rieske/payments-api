@@ -12,4 +12,3 @@ services:
     environment:
     - JAVA_OPTS=-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5005
     - JMX_PORT=1099
-    - MANAGEMENT_METRICS_EXPORT_GRAPHITE_ENABLED=false

@@ -53,15 +53,15 @@ public abstract class SpringBootSteps {
     private ResultActions resultActions;
 
     public void setUp() {
-        documentationHandler = document("{method-name}",
+       /* documentationHandler = document("{method-name}",
           preprocessRequest(prettyPrint()),
-          preprocessResponse(prettyPrint()));
+          preprocessResponse(prettyPrint()));*/
 
         restDocumentation = new ManualRestDocumentation("build/generated-snippets");
 
         mockMvc = MockMvcBuilders.webAppContextSetup(context)
           .apply(documentationConfiguration(restDocumentation))
-          .alwaysDo(this.documentationHandler)
+          //.alwaysDo(documentationHandler)
           .build();
 
         restDocumentation.beforeTest(FunctionalTest.class, "setUp");
@@ -95,8 +95,8 @@ public abstract class SpringBootSteps {
         assertThat(paymentsRepository.findById(UUID.fromString(paymentId))).isEmpty();
     }
 
-    void get(String path, String contentType) throws Exception {
-        resultActions = mockMvc.perform(MockMvcRequestBuilders.get(path).accept(contentType));
+    void get(String resourcePath, String contentType) throws Exception {
+        resultActions = mockMvc.perform(MockMvcRequestBuilders.get(resourcePath).accept(contentType));
     }
 
     void post(String resourcePath, String fixture) throws Exception {
@@ -116,11 +116,13 @@ public abstract class SpringBootSteps {
     void patch(String resourcePath, String fixture) throws Exception {
         String content = readFixtureAsString(fixture);
         resultActions = mockMvc.perform(MockMvcRequestBuilders.patch(resourcePath).content(content));
+        ;
     }
 
     void patchAccepting(String resourcePath, String fixture, String contentType) throws Exception {
         String content = readFixtureAsString(fixture);
-        resultActions = mockMvc.perform(MockMvcRequestBuilders.patch(resourcePath).content(content).accept(contentType));
+        resultActions = mockMvc
+          .perform(MockMvcRequestBuilders.patch(resourcePath).content(content).accept(contentType));
     }
 
     void assertHttpStatus(int statusCode) throws Exception {
@@ -166,13 +168,20 @@ public abstract class SpringBootSteps {
         resultActions.andExpect(MockMvcResultMatchers.content().json(expectedContent));
     }
 
+    void documentInteraction(String interactionId) throws Exception {
+        resultActions.andDo(document(interactionId,
+          preprocessRequest(prettyPrint()),
+          preprocessResponse(prettyPrint())));
+    }
+
     private Payment readPaymentFromFixture(String fixture) throws IOException {
         return mapper.readValue(getClass().getResourceAsStream(fixturePath(fixture)), Payment.class);
     }
 
     private List<Payment> readPaymentsListFromFixture(String fixture) throws IOException {
-        return mapper.readValue(getClass().getResourceAsStream(fixturePath(fixture)), new TypeReference<List<Payment>>() {
-        });
+        return mapper
+          .readValue(getClass().getResourceAsStream(fixturePath(fixture)), new TypeReference<List<Payment>>() {
+          });
     }
 
     private String readFixtureAsString(String fixture) throws IOException {
