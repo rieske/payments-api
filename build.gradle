@@ -133,6 +133,10 @@ dependencies {
     consumerContractTestCompile 'javax.xml.bind:jaxb-api:2.3.0'
 
     componentTestCompile 'com.palantir.docker.compose:docker-compose-rule-junit4:0.33.0'
+    componentTestCompile 'io.rest-assured:rest-assured:3.0.7'
+    componentTestCompile 'org.slf4j:slf4j-log4j12:1.7.25'
+    componentTestCompile 'commons-logging:commons-logging:1.2'
+
 }
 
 test.dependsOn(consumerContractTest)
