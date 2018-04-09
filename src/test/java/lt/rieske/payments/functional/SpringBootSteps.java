@@ -113,6 +113,16 @@ public abstract class SpringBootSteps {
         resultActions = mockMvc.perform(MockMvcRequestBuilders.delete(resourcePath));
     }
 
+    void patch(String resourcePath, String fixture) throws Exception {
+        String content = readFixtureAsString(fixture);
+        resultActions = mockMvc.perform(MockMvcRequestBuilders.patch(resourcePath).content(content));
+    }
+
+    void patchAccepting(String resourcePath, String fixture, String contentType) throws Exception {
+        String content = readFixtureAsString(fixture);
+        resultActions = mockMvc.perform(MockMvcRequestBuilders.patch(resourcePath).content(content).accept(contentType));
+    }
+
     void assertHttpStatus(int statusCode) throws Exception {
         resultActions.andExpect(status().is(statusCode));
     }

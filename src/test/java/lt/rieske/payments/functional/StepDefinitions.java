@@ -1,6 +1,5 @@
 package lt.rieske.payments.functional;
 
-import cucumber.api.PendingException;
 import cucumber.api.java.After;
 import cucumber.api.java.Before;
 import cucumber.api.java8.En;
@@ -30,6 +29,8 @@ public class StepDefinitions extends SpringBootSteps implements En {
         When("^the client issues a POST to \"([^\"]*)\" with payload \"([^\"]*)\"$", super::post);
         When("^the client issues a POST to \"([^\"]*)\" with payload \"([^\"]*)\" requesting \"([^\"]*)\"$", super::postAccepting);
         When("^the client issues a DELETE \"([^\"]*)\"$", super::delete);
+        When("^the client issues a PATCH \"([^\"]*)\" with body \"([^\"]*)\"$", super::patch);
+        When("^the client issues a PATCH \"([^\"]*)\" with body \"([^\"]*)\" requesting \"([^\"]*)\"$", super::patchAccepting);
 
         Then("^the client receives status code of (\\d+)$", super::assertHttpStatus);
 
@@ -39,8 +40,6 @@ public class StepDefinitions extends SpringBootSteps implements En {
         And("^the response body contains resource matching \"([^\"]*)\"$", super::assertResponseBodyMatchesFixture);
         And("^the response body contains an empty list of payments$", super::assertResponseBodyContainsAnEmptyListOfPayments);
         And("^the response body contains a list of payments matching \"([^\"]*)\"$", super::assertResponseBodyContainsPayments);
-
-
     }
 
 }
