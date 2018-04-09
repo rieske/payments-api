@@ -136,7 +136,7 @@ dependencies {
     componentTestCompile 'io.rest-assured:rest-assured:3.0.7'
     componentTestCompile 'org.slf4j:slf4j-log4j12:1.7.25'
     componentTestCompile 'commons-logging:commons-logging:1.2'
-
+    componentTestCompile 'commons-io:commons-io:2.6'
 }
 
 test.dependsOn(consumerContractTest)
