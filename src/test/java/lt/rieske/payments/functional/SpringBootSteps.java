@@ -7,6 +7,7 @@ import lt.rieske.payments.domain.Payment;
 import lt.rieske.payments.domain.PaymentsRepository;
 import org.apache.commons.codec.Charsets;
 import org.apache.commons.io.IOUtils;
+import org.hamcrest.Matchers;
 import org.skyscreamer.jsonassert.JSONAssert;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -24,6 +25,7 @@ import java.util.List;
 import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.hamcrest.Matchers.empty;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.documentationConfiguration;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.preprocessRequest;
@@ -160,6 +162,14 @@ public abstract class SpringBootSteps {
     void assertResponseBodyMatchesFixture(String fixture) throws Exception {
         String expectedContent = readFixtureAsString(fixture);
         resultActions.andExpect(MockMvcResultMatchers.content().json(expectedContent));
+    }
+
+    void assertResponseBodyContainsBadRequestDescription() throws Exception {
+        resultActions.andExpect(MockMvcResultMatchers.jsonPath("$.message", Matchers.not(empty())));
+    }
+
+    void assertResponseBodyContainsValidationErrorDescription() throws Exception {
+        resultActions.andExpect(MockMvcResultMatchers.jsonPath("$.errors", Matchers.not(empty())));
     }
 
     void documentInteraction(String interactionId) throws Exception {

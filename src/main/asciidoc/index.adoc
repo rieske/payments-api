@@ -78,4 +78,8 @@ include::{snippets}/delete-payment/http-response.adoc[]
 
 
 '''
-== Definitions
+== Schema
+
+.payment
+include::{snippets}/payment-schema/response-body.adoc[]
+

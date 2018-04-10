@@ -13,3 +13,9 @@ Feature: get payment resource
     And response contains "Content-Type" header with value "application/json;charset=UTF-8"
     And the response body contains resource matching "payment.json"
     And the interaction is documented as "get-payment"
+
+  Scenario: client issues a GET to /api/v1/payments/{paymentId} with invalid payment id
+    When the client issues a GET "/api/v1/payments/not-a-uuid" requesting "application/json"
+    Then the client receives status code of 400
+    And the response body is empty
+    And the interaction is documented as "get-payment-invalid-id"

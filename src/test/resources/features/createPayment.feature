@@ -14,3 +14,27 @@ Feature: create payment resource
     And new resource location in Location header
     And the response body contains resource matching "payment.json"
     And the interaction is documented as "create-payment-with-response"
+
+  Scenario Outline: client issues a POST to /api/v1/payments with malformed request
+    When the client issues a POST to "/api/v1/payments" with payload <fixture> requesting "application/json"
+    Then the client receives status code of 400
+    And response contains "Content-Type" header with value "application/json;charset=UTF-8"
+    And the response body contains bad request description
+    And the interaction is documented as "create-payment-bad-request"
+
+  Examples:
+    | fixture                           |
+    | "post-validation/malformed.json"  |
+    | "post-validation/empty.json"      |
+
+  Scenario Outline: client issues a POST to /api/v1/payments with an invalid request
+    When the client issues a POST to "/api/v1/payments" with payload <fixture> requesting "application/json"
+    Then the client receives status code of 400
+    And response contains "Content-Type" header with value "application/json;charset=UTF-8"
+    And the response body contains validation error description
+    And the interaction is documented as "create-payment-bad-request"
+
+    Examples:
+    | fixture                                 |
+    | "post-validation/empty-object.json"     |
+    | "post-validation/missing-amount.json"   |
