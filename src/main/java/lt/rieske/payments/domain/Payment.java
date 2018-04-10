@@ -9,13 +9,11 @@ import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import javax.persistence.JoinTable;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Positive;
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -31,8 +29,6 @@ import static javax.persistence.CascadeType.ALL;
 @Table(name = "payment")
 public class Payment {
 
-    public static final String UUID_PATTERN = "^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{12}$";
-
     @Id
     @GeneratedValue(generator = "idGenerator")
     @GenericGenerator(name = "idGenerator", strategy = "lt.rieske.payments.infrastructure.OnlyIfAbsentIdGenerator")
@@ -41,9 +37,14 @@ public class Payment {
 
     @NotNull
     private String type;
-    private int version;
+
+    @NotNull
+    private Integer version;
+
+    @NotNull
     private String organisationId;
 
+    @NotNull
     @Valid
     private PaymentAttributes attributes;
 
@@ -51,6 +52,7 @@ public class Payment {
     @Data
     public static class PaymentAttributes {
 
+        @Positive
         @NotNull
         private BigDecimal amount;
 
