@@ -53,15 +53,10 @@ public abstract class SpringBootSteps {
     private ResultActions resultActions;
 
     public void setUp() {
-       /* documentationHandler = document("{method-name}",
-          preprocessRequest(prettyPrint()),
-          preprocessResponse(prettyPrint()));*/
-
         restDocumentation = new ManualRestDocumentation("build/generated-snippets");
 
         mockMvc = MockMvcBuilders.webAppContextSetup(context)
           .apply(documentationConfiguration(restDocumentation))
-          //.alwaysDo(documentationHandler)
           .build();
 
         restDocumentation.beforeTest(FunctionalTest.class, "setUp");
@@ -116,7 +111,6 @@ public abstract class SpringBootSteps {
     void patch(String resourcePath, String fixture) throws Exception {
         String content = readFixtureAsString(fixture);
         resultActions = mockMvc.perform(MockMvcRequestBuilders.patch(resourcePath).content(content));
-        ;
     }
 
     void patchAccepting(String resourcePath, String fixture, String contentType) throws Exception {
