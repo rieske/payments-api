@@ -4,12 +4,12 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jayway.jsonpath.DocumentContext;
 import com.jayway.jsonpath.JsonPath;
+import cucumber.api.DataTable;
 import lt.rieske.payments.domain.Payment;
 import lt.rieske.payments.domain.PaymentsRepository;
 import org.apache.commons.codec.Charsets;
 import org.apache.commons.io.IOUtils;
 import org.hamcrest.Matchers;
-import org.json.JSONObject;
 import org.skyscreamer.jsonassert.JSONAssert;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -28,6 +28,7 @@ import java.util.UUID;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.empty;
 import static org.hamcrest.core.IsEqual.equalTo;
+import static org.hamcrest.core.IsNull.nullValue;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.documentationConfiguration;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.preprocessRequest;
@@ -103,12 +104,12 @@ public abstract class MockMvcSteps {
         resultActions = mockMvc.perform(MockMvcRequestBuilders.post(resourcePath).content(content));
     }
 
-    void postAccepting(String resourcePath, String fixture, String contentType) throws Exception {
+    void postAccepting(String resourcePath, String contentType, String fixture) throws Exception {
         String content = readFixtureAsString(fixture);
         resultActions = mockMvc.perform(MockMvcRequestBuilders.post(resourcePath).content(content).accept(contentType));
     }
 
-    void postAcceptingWithModifiedContent(String resourcePath, String fixture, String field, String value, String contentType) throws Exception {
+    void postAcceptingWithModifiedContent(String resourcePath, String contentType, String fixture, String field, String value) throws Exception {
         String content = readFixtureAsString(fixture);
         String modifiedContent = replaceFieldInJson(content, field, value);
         resultActions = mockMvc.perform(MockMvcRequestBuilders.post(resourcePath).content(modifiedContent).accept(contentType));
@@ -123,13 +124,18 @@ public abstract class MockMvcSteps {
         resultActions = mockMvc.perform(MockMvcRequestBuilders.patch(resourcePath).content(content));
     }
 
-    void patchAccepting(String resourcePath, String fixture, String contentType) throws Exception {
+    void patchAccepting(String resourcePath, String contentType, String fixture) throws Exception {
         String content = readFixtureAsString(fixture);
         resultActions = mockMvc
           .perform(MockMvcRequestBuilders.patch(resourcePath).content(content).accept(contentType));
     }
 
-    void patchAcceptingWithModifiedContent(String resourcePath, String fixture, String field, String value, String contentType) throws Exception {
+    void patchAcceptingWithBody(String resourcePath, String contentType, String body) throws Exception {
+        resultActions = mockMvc
+          .perform(MockMvcRequestBuilders.patch(resourcePath).content(body).accept(contentType));
+    }
+
+    void patchAcceptingWithModifiedContent(String resourcePath, String contentType, String fixture, String field, String value) throws Exception {
         String content = readFixtureAsString(fixture);
         String modifiedContent = replaceFieldInJson(content, field, value);
         resultActions = mockMvc.perform(MockMvcRequestBuilders.patch(resourcePath).content(modifiedContent).accept(contentType));
@@ -178,12 +184,15 @@ public abstract class MockMvcSteps {
         resultActions.andExpect(MockMvcResultMatchers.content().json(expectedContent));
     }
 
+    void assertResponseBodyContainsJsonpathMatching(DataTable jsonPaths) {
+        jsonPaths.asMap(String.class, String.class).forEach(this::matchJsonPath);
+    }
+
     void assertResponseBodyContainsBadRequestDescription() throws Exception {
         resultActions.andExpect(jsonPath("$.message", Matchers.not(empty())));
     }
 
     void assertResponseBodyContainsValidationErrorDescription() throws Exception {
-        System.out.println(resultActions.andReturn().getResponse().getContentAsString());
         resultActions.andExpect(jsonPath("$.errors", Matchers.not(empty())));
     }
 
@@ -222,4 +231,17 @@ public abstract class MockMvcSteps {
         return jsonPath.jsonString();
     }
 
+    private void matchJsonPath(String jsonpath, String value) {
+        try {
+            if (jsonpath.endsWith(".length()")) {
+                resultActions.andExpect(jsonPath(jsonpath, equalTo(Integer.valueOf(value))));
+            } else if (value.equals("null")) {
+                resultActions.andExpect(jsonPath(jsonpath, nullValue()));
+            } else {
+                resultActions.andExpect(jsonPath(jsonpath, equalTo(value)));
+            }
+        } catch (Exception e) {
+            throw new IllegalStateException(e);
+        }
+    }
 }

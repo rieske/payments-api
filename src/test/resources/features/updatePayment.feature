@@ -15,14 +15,14 @@ Feature: update payment resource
 
   Scenario: client issues a PATCH to /api/v1/payments/{paymentId} for existing payment id
     Given payment payment.json exists with id 09a8fe0d-e239-4aff-8098-7923eadd0b98
-    When the client issues a PATCH /api/v1/payments/09a8fe0d-e239-4aff-8098-7923eadd0b98 with body payment.json requesting application/json
+    When the client issues a PATCH /api/v1/payments/09a8fe0d-e239-4aff-8098-7923eadd0b98 accepting application/json with body payment.json
     Then the client receives status code of 200
     And the response body contains resource matching payment.json
     And the interaction is documented as update-payment-with-response
 
   Scenario Outline: client issues a PATCH to /api/v1/payments/{paymentId} with partial update request
     Given payment payment.json exists with id 09a8fe0d-e239-4aff-8098-7923eadd0b98
-    When the client issues a PATCH /api/v1/payments/09a8fe0d-e239-4aff-8098-7923eadd0b98 with body <fixture> requesting application/json
+    When the client issues a PATCH /api/v1/payments/09a8fe0d-e239-4aff-8098-7923eadd0b98 accepting application/json with body <fixture>
     Then the client receives status code of 200
     And response contains Content-Type header with value application/json;charset=UTF-8
     And the response body contains resource matching payment.json
@@ -31,10 +31,11 @@ Feature: update payment resource
       | fixture                        |
       | validation/empty-object.json   |
       | validation/sender-charges.json |
+      | validation/forex.json          |
 
   Scenario Outline: client issues a PUT to /api/v1/payments/{paymentId} with partial update request
     Given payment payment.json exists with id 09a8fe0d-e239-4aff-8098-7923eadd0b98
-    When the client issues a PATCH to /api/v1/payments/09a8fe0d-e239-4aff-8098-7923eadd0b98 with payload payment.json with field <field> having <value> requesting application/json
+    When the client issues a PATCH to /api/v1/payments/09a8fe0d-e239-4aff-8098-7923eadd0b98 accepting application/json with payload payment.json with field <field> having <value>
     Then the client receives status code of 200
     And response contains Content-Type header with value application/json;charset=UTF-8
     And the response body contains resource matching payment.json
@@ -92,7 +93,7 @@ Feature: update payment resource
 
   Scenario Outline: client issues a PATCH to /api/v1/payments/{paymentId} with an invalid request
     Given payment payment.json exists with id 09a8fe0d-e239-4aff-8098-7923eadd0b98
-    When the client issues a PATCH to /api/v1/payments/09a8fe0d-e239-4aff-8098-7923eadd0b98 with payload payment.json with field <field> having <invalid-value> requesting application/json
+    When the client issues a PATCH to /api/v1/payments/09a8fe0d-e239-4aff-8098-7923eadd0b98 accepting application/json with payload payment.json with field <field> having <invalid-value>
     Then the client receives status code of 400
     And response contains Content-Type header with value application/json;charset=UTF-8
     And the response body contains validation error description
@@ -116,7 +117,7 @@ Feature: update payment resource
 
   Scenario Outline: client issues a PATCH to /api/v1/payments/{paymentId} with malformed request
     Given payment payment.json exists with id 09a8fe0d-e239-4aff-8098-7923eadd0b98
-    When the client issues a PATCH to /api/v1/payments/09a8fe0d-e239-4aff-8098-7923eadd0b98 with payload payment.json with field <field> having <invalid-value> requesting application/json
+    When the client issues a PATCH to /api/v1/payments/09a8fe0d-e239-4aff-8098-7923eadd0b98 accepting application/json with payload payment.json with field <field> having <invalid-value>
     Then the client receives status code of 400
     And response contains Content-Type header with value application/json;charset=UTF-8
     And the response body contains bad request description
@@ -130,7 +131,7 @@ Feature: update payment resource
 
   Scenario Outline: client issues a PATCH to /api/v1/payments/{paymentId} with malformed request
     Given payment payment.json exists with id 09a8fe0d-e239-4aff-8098-7923eadd0b98
-    When the client issues a PATCH /api/v1/payments/09a8fe0d-e239-4aff-8098-7923eadd0b98 with body <fixture> requesting application/json
+    When the client issues a PATCH /api/v1/payments/09a8fe0d-e239-4aff-8098-7923eadd0b98 accepting application/json with body <fixture>
     Then the client receives status code of 400
     And response contains Content-Type header with value application/json;charset=UTF-8
     And the response body contains bad request description
@@ -141,7 +142,91 @@ Feature: update payment resource
       | validation/malformed.json |
       | validation/empty.json     |
 
+  Scenario: client adds payment charges to a payment
+    Given payment validation/no-sender-charges.json exists with id 09a8fe0d-e239-4aff-8098-7923eadd0b98
+    When the client issues a PATCH /api/v1/payments/09a8fe0d-e239-4aff-8098-7923eadd0b98 accepting application/json with body:
+    """
+      {
+        "attributes": {
+          "charges_information": {
+            "sender_charges": [
+              {
+                "amount": "5.00",
+                "currency": "GBP"
+              },
+              {
+                "amount": "10.00",
+                "currency": "USD"
+              }
+            ]
+          }
+        }
+      }
+    """
+    Then the client receives status code of 200
+    And response contains Content-Type header with value application/json;charset=UTF-8
+    And the response body contains jsonpaths matching
+      | $.attributes.charges_information.sender_charges.length()    | 2     |
+      | $.attributes.charges_information.sender_charges[0].amount   | 5.00  |
+      | $.attributes.charges_information.sender_charges[0].currency | GBP   |
+      | $.attributes.charges_information.sender_charges[1].amount   | 10.00 |
+      | $.attributes.charges_information.sender_charges[1].currency | USD   |
 
 
+  Scenario: client removes payment charges from a payment
+    Given payment payment.json exists with id 09a8fe0d-e239-4aff-8098-7923eadd0b98
+    When the client issues a PATCH /api/v1/payments/09a8fe0d-e239-4aff-8098-7923eadd0b98 accepting application/json with body:
+    """
+      {
+        "attributes": {
+          "charges_information": {
+            "sender_charges": []
+          }
+        }
+      }
+    """
+    Then the client receives status code of 200
+    And response contains Content-Type header with value application/json;charset=UTF-8
+    And the response body contains jsonpaths matching
+      | $.attributes.charges_information.sender_charges.length()    | 0     |
 
+
+  Scenario: client adds forex to a payment
+    Given payment validation/no-forex.json exists with id 09a8fe0d-e239-4aff-8098-7923eadd0b98
+    When the client issues a PATCH /api/v1/payments/09a8fe0d-e239-4aff-8098-7923eadd0b98 accepting application/json with body:
+    """
+      {
+        "attributes": {
+          "fx": {
+            "contract_reference": "FX12345",
+            "exchange_rate": "2.00000",
+            "original_amount": "200.42",
+            "original_currency": "EUR"
+          }
+        }
+      }
+    """
+    Then the client receives status code of 200
+    And response contains Content-Type header with value application/json;charset=UTF-8
+    And the response body contains jsonpaths matching
+      | $.attributes.fx.contract_reference | FX12345 |
+      | $.attributes.fx.exchange_rate      | 2.00000 |
+      | $.attributes.fx.original_amount    | 200.42  |
+      | $.attributes.fx.original_currency  | EUR     |
+
+
+  Scenario: client deletes forex from a payment
+    Given payment payment.json exists with id 09a8fe0d-e239-4aff-8098-7923eadd0b98
+    When the client issues a PATCH /api/v1/payments/09a8fe0d-e239-4aff-8098-7923eadd0b98 accepting application/json with body:
+    """
+      {
+        "attributes": {
+          "fx": null
+        }
+      }
+    """
+    Then the client receives status code of 200
+    And response contains Content-Type header with value application/json;charset=UTF-8
+    And the response body contains jsonpaths matching
+      | $.attributes.fx | null |
 

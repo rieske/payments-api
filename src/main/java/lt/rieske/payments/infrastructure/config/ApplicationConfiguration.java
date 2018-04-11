@@ -7,6 +7,7 @@ import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import io.micrometer.core.instrument.MeterRegistry;
 import lt.rieske.payments.domain.Payment;
+import lt.rieske.payments.domain.PaymentBusinessRulesValidator;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.actuate.autoconfigure.metrics.MeterRegistryCustomizer;
@@ -59,4 +60,8 @@ public class ApplicationConfiguration {
         };
     }
 
+    @Bean
+    public PaymentBusinessRulesValidator paymentEventHandler() {
+        return new PaymentBusinessRulesValidator();
+    }
 }

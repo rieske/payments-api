@@ -196,7 +196,7 @@ public class Payment {
             private Currency receiverChargesCurrency;
 
             @Valid
-            @OneToMany(cascade = ALL, fetch = FetchType.EAGER, orphanRemoval = true)
+            @OneToMany(cascade = ALL, fetch = FetchType.EAGER)
             private List<Charge> senderCharges = new ArrayList<>();
 
             @Entity

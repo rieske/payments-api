@@ -11,10 +11,11 @@ Feature: create payment resource
       | fixture                           |
       | payment.json                      |
       | validation/no-sender-charges.json |
+      | validation/no-forex.json          |
 
 
-  Scenario Outline: client issues a POST to /api/v1/payments requesting json
-    When the client issues a POST to /api/v1/payments with payload <fixture> requesting application/json
+  Scenario Outline: client issues a POST to /api/v1/payments accepting json
+    When the client issues a POST to /api/v1/payments accepting application/json with payload <fixture>
     Then the client receives status code of 201
     And response contains Content-Type header with value application/json;charset=UTF-8
     And new resource location in Location header
@@ -25,6 +26,7 @@ Feature: create payment resource
       | fixture                           |
       | payment.json                      |
       | validation/no-sender-charges.json |
+      | validation/no-forex.json          |
 
 
   Scenario: client issues a POST to /api/v1/payments
@@ -36,11 +38,11 @@ Feature: create payment resource
 
 
   Scenario Outline: client issues a POST to /api/v1/payments with malformed request
-    When the client issues a POST to /api/v1/payments with payload <fixture> requesting application/json
+    When the client issues a POST to /api/v1/payments accepting application/json with payload <fixture>
     Then the client receives status code of 400
     And response contains Content-Type header with value application/json;charset=UTF-8
     And the response body contains bad request description
-    And the interaction is documented as create-payment-bad-request
+    And the interaction is documented as create-payment-malformed-request
 
     Examples:
       | fixture                   |
@@ -48,7 +50,7 @@ Feature: create payment resource
       | validation/empty.json     |
 
   Scenario Outline: client issues a POST to /api/v1/payments with malformed request
-    When the client issues a POST to /api/v1/payments with payload payment.json with field <field> having <invalid-value> requesting application/json
+    When the client issues a POST to /api/v1/payments accepting application/json with payload payment.json with field <field> having <invalid-value>
     Then the client receives status code of 400
     And response contains Content-Type header with value application/json;charset=UTF-8
     And the response body contains bad request description
@@ -70,7 +72,7 @@ Feature: create payment resource
       | attributes.charges_information.sender_charges[0].currency | bbbccc        |
 
   Scenario Outline: client issues a POST to /api/v1/payments with an invalid request
-    When the client issues a POST to /api/v1/payments with payload <fixture> requesting application/json
+    When the client issues a POST to /api/v1/payments accepting application/json with payload <fixture>
     Then the client receives status code of 400
     And response contains Content-Type header with value application/json;charset=UTF-8
     And the response body contains validation error description
@@ -82,7 +84,7 @@ Feature: create payment resource
 
 
   Scenario Outline: client issues a POST to /api/v1/payments with an invalid request
-    When the client issues a POST to /api/v1/payments with payload payment.json with field <field> having <invalid-value> requesting application/json
+    When the client issues a POST to /api/v1/payments accepting application/json with payload payment.json with field <field> having <invalid-value>
     Then the client receives status code of 400
     And response contains Content-Type header with value application/json;charset=UTF-8
     And the response body contains validation error description
