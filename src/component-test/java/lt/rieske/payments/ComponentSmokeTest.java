@@ -57,14 +57,22 @@ public class ComponentSmokeTest {
     }
 
     @Test
-    public void canSaveAndRetrievePayments() throws IOException {
+    public void canSaveUpdateAndRetrievePayments() throws IOException {
         assertNoPaymentsExist();
 
         String paymentUri = createPayment();
 
-        assertCanFetchPayment(paymentUri);
+        assertCanFetchPaymentAndAmountIs(paymentUri, "100.21");
 
-        assertSinglePaymentExists();
+        assertSinglePaymentWithAmountExists();
+
+        assertCanNotUpdateAmountToNegative(paymentUri);
+
+        assertCanFetchPaymentAndAmountIs(paymentUri, "100.21");
+
+        assertCanUpdateAmount(paymentUri, "42.00");
+
+        assertCanFetchPaymentAndAmountIs(paymentUri, "42.00");
 
         deletePayment(paymentUri);
 
@@ -84,7 +92,7 @@ public class ComponentSmokeTest {
         // @formatter:on
     }
 
-    private void assertSinglePaymentExists() {
+    private void assertSinglePaymentWithAmountExists() {
         // @formatter:off
         when()
           .get("/api/v1/payments")
@@ -110,14 +118,44 @@ public class ComponentSmokeTest {
         // @formatter:on
     }
 
-    private void assertCanFetchPayment(String paymentUri) {
+    private void assertCanUpdateAmount(String paymentUri, String amount) {
+        // @formatter:off
+        given()
+          .body("{\"attributes\": { \"amount\": \"" + amount + "\"}}")
+          .contentType("application/json")
+          .accept("")
+        .when()
+          .patch(paymentUri)
+        .then()
+          .log().all()
+          .statusCode(204);
+        // @formatter:on
+    }
+
+    private void assertCanNotUpdateAmountToNegative(String paymentUri) {
+        // @formatter:off
+        given()
+          .body("{\"attributes\": { \"amount\": \"-42.00\"}}")
+          .contentType("application/json")
+          .accept("")
+        .when()
+          .patch(paymentUri)
+        .then()
+          .log().all()
+          .statusCode(400)
+          .body("errors", hasSize(1));
+        // @formatter:on
+    }
+
+    private void assertCanFetchPaymentAndAmountIs(String paymentUri, String amount) {
         // @formatter:off
         when()
           .get(paymentUri)
         .then()
           .log().all()
           .statusCode(200)
-          .body("id", notNullValue());
+          .body("id", notNullValue())
+          .body("attributes.amount", equalTo(amount));
         // @formatter:on
     }
 

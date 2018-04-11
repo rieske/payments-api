@@ -1,13 +1,10 @@
 package lt.rieske.payments.functional;
 
-import cucumber.api.PendingException;
 import cucumber.api.java.After;
 import cucumber.api.java.Before;
 import cucumber.api.java8.En;
 
-import java.util.Map;
-
-public class StepDefinitions extends SpringBootSteps implements En {
+public class StepDefinitions extends MockMvcSteps implements En {
 
     @Before
     public void setUp() {
