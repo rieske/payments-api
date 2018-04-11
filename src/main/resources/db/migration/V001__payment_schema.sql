@@ -42,7 +42,7 @@ CREATE TABLE payment (
     original_amount numeric(19,2),
     original_currency character varying(255),
     numeric_reference character varying(255),
-    payment_id character varying(255),
+    payment_id character varying(255) UNIQUE,
     payment_purpose character varying(255),
     payment_scheme character varying(255),
     payment_type character varying(255),

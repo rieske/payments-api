@@ -15,6 +15,13 @@ Feature: create payment resource
     And the response body contains resource matching "payment.json"
     And the interaction is documented as "create-payment-with-response"
 
+  Scenario: client issues a POST to /api/v1/payments
+    Given payment "payment.json" exists
+    When the client issues a POST to "/api/v1/payments" with payload "payment.json"
+    Then the client receives status code of 409
+    And the response body contains bad request description
+    And the interaction is documented as "create-payment-conflict"
+
   Scenario Outline: client issues a POST to /api/v1/payments with malformed request
     When the client issues a POST to "/api/v1/payments" with payload <fixture> requesting "application/json"
     Then the client receives status code of 400
