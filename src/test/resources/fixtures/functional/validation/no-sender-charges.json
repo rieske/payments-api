@@ -3,7 +3,7 @@
   "version": 0,
   "organisation_id": "743d5b63-8e6f-432e-a8fa-c5d8d2ee5fcb",
   "attributes": {
-    "amount": "-42",
+    "amount": "100.21",
     "beneficiary_party": {
       "account_name": "W Owens",
       "account_number": "31926819",
@@ -16,16 +16,6 @@
     },
     "charges_information": {
       "bearer_code": "SHAR",
-      "sender_charges": [
-        {
-          "amount": "5.00",
-          "currency": "GBP"
-        },
-        {
-          "amount": "10.00",
-          "currency": "USD"
-        }
-      ],
       "receiver_charges_amount": "1.00",
       "receiver_charges_currency": "USD"
     },

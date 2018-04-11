@@ -1,0 +1,16 @@
+{
+  "attributes": {
+    "charges_information": {
+      "sender_charges": [
+        {
+          "amount": "5.00",
+          "currency": "GBP"
+        },
+        {
+          "amount": "10.00",
+          "currency": "USD"
+        }
+      ]
+    }
+  }
+}

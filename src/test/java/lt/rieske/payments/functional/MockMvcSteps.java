@@ -2,12 +2,14 @@ package lt.rieske.payments.functional;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.jayway.jsonpath.DocumentContext;
 import com.jayway.jsonpath.JsonPath;
 import lt.rieske.payments.domain.Payment;
 import lt.rieske.payments.domain.PaymentsRepository;
 import org.apache.commons.codec.Charsets;
 import org.apache.commons.io.IOUtils;
 import org.hamcrest.Matchers;
+import org.json.JSONObject;
 import org.skyscreamer.jsonassert.JSONAssert;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -25,12 +27,14 @@ import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.empty;
+import static org.hamcrest.core.IsEqual.equalTo;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.documentationConfiguration;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.preprocessRequest;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.preprocessResponse;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.prettyPrint;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest
@@ -104,6 +108,12 @@ public abstract class MockMvcSteps {
         resultActions = mockMvc.perform(MockMvcRequestBuilders.post(resourcePath).content(content).accept(contentType));
     }
 
+    void postAcceptingWithModifiedContent(String resourcePath, String fixture, String field, String value, String contentType) throws Exception {
+        String content = readFixtureAsString(fixture);
+        String modifiedContent = replaceFieldInJson(content, field, value);
+        resultActions = mockMvc.perform(MockMvcRequestBuilders.post(resourcePath).content(modifiedContent).accept(contentType));
+    }
+
     void delete(String resourcePath) throws Exception {
         resultActions = mockMvc.perform(MockMvcRequestBuilders.delete(resourcePath));
     }
@@ -117,6 +127,12 @@ public abstract class MockMvcSteps {
         String content = readFixtureAsString(fixture);
         resultActions = mockMvc
           .perform(MockMvcRequestBuilders.patch(resourcePath).content(content).accept(contentType));
+    }
+
+    void patchAcceptingWithModifiedContent(String resourcePath, String fixture, String field, String value, String contentType) throws Exception {
+        String content = readFixtureAsString(fixture);
+        String modifiedContent = replaceFieldInJson(content, field, value);
+        resultActions = mockMvc.perform(MockMvcRequestBuilders.patch(resourcePath).content(modifiedContent).accept(contentType));
     }
 
     void assertHttpStatus(int statusCode) throws Exception {
@@ -133,7 +149,7 @@ public abstract class MockMvcSteps {
               String location = result.getResponse().getHeader("Location");
               String resourceId = location.substring(location.lastIndexOf('/') + 1);
               mockMvc.perform(MockMvcRequestBuilders.get(location)).andExpect(status().is(200))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.id").value(resourceId));
+                .andExpect(jsonPath("$.id").value(resourceId));
           });
     }
 
@@ -142,15 +158,15 @@ public abstract class MockMvcSteps {
     }
 
     void assertResponseBodyContainsAnEmptyListOfPayments() throws Exception {
-        resultActions.andExpect(MockMvcResultMatchers.jsonPath("$._embedded.payments").isArray())
-          .andExpect(MockMvcResultMatchers.jsonPath("$._embedded.payments").isEmpty());
+        resultActions.andExpect(jsonPath("$._embedded.payments").isArray())
+          .andExpect(jsonPath("$._embedded.payments").isEmpty());
     }
 
     void assertResponseBodyContainsPayments(String fixture) throws Exception {
         String expectedContent = readFixtureAsString(fixture);
         String returnedContent = resultActions
-          .andExpect(MockMvcResultMatchers.jsonPath("$._embedded.payments").isArray())
-          .andExpect(MockMvcResultMatchers.jsonPath("$._embedded.payments").isNotEmpty())
+          .andExpect(jsonPath("$._embedded.payments").isArray())
+          .andExpect(jsonPath("$._embedded.payments").isNotEmpty())
           .andReturn().getResponse().getContentAsString();
 
         String returnedPayments = JsonPath.read(returnedContent, "$._embedded.payments").toString();
@@ -163,11 +179,12 @@ public abstract class MockMvcSteps {
     }
 
     void assertResponseBodyContainsBadRequestDescription() throws Exception {
-        resultActions.andExpect(MockMvcResultMatchers.jsonPath("$.message", Matchers.not(empty())));
+        resultActions.andExpect(jsonPath("$.message", Matchers.not(empty())));
     }
 
     void assertResponseBodyContainsValidationErrorDescription() throws Exception {
-        resultActions.andExpect(MockMvcResultMatchers.jsonPath("$.errors", Matchers.not(empty())));
+        System.out.println(resultActions.andReturn().getResponse().getContentAsString());
+        resultActions.andExpect(jsonPath("$.errors", Matchers.not(empty())));
     }
 
     void documentInteraction(String interactionId) throws Exception {
@@ -192,6 +209,17 @@ public abstract class MockMvcSteps {
 
     private String fixturePath(String fixture) {
         return FIXTURES_PATH + fixture;
+    }
+
+    private String replaceFieldInJson(String content, String field, String value) {
+        DocumentContext jsonPath = JsonPath.parse(content);
+        String fieldPath = "$." + field;
+        if ("null".equals(value)) {
+            jsonPath = jsonPath.delete(fieldPath);
+        } else {
+            jsonPath = jsonPath.set(fieldPath, value);
+        }
+        return jsonPath.jsonString();
     }
 
 }

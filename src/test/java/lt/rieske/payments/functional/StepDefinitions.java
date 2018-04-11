@@ -18,31 +18,35 @@ public class StepDefinitions extends MockMvcSteps implements En {
 
     public StepDefinitions() {
 
-        Given("^payment \"([^\"]*)\" exists$", super::paymentExists);
-        Given("^payment \"([^\"]*)\" exists with id \"([^\"]*)\"$", super::paymentWithIdExists);
+        Given("^payment ([^\\s]+) exists$", super::paymentExists);
+        Given("^payment ([^\\s]+) exists with id ([^\\s]+)$", super::paymentWithIdExists);
         Given("^no payments exist$", super::assertNoPaymentsExist);
-        Given("^payment with id \"([^\"]*)\" does not exist$", super::assertPaymentDoesNotExist);
-        Given("^payments \"([^\"]*)\" exist$", super::paymentsListExists);
+        Given("^payment with id ([^\\s]+) does not exist$", super::assertPaymentDoesNotExist);
+        Given("^payments ([^\\s]+) exist$", super::paymentsListExists);
 
-        When("^the client issues a GET \"([^\"]*)\" requesting \"([^\"]*)\"$", super::get);
-        When("^the client issues a POST to \"([^\"]*)\" with payload \"([^\"]*)\"$", super::post);
-        When("^the client issues a POST to \"([^\"]*)\" with payload \"([^\"]*)\" requesting \"([^\"]*)\"$", super::postAccepting);
-        When("^the client issues a DELETE \"([^\"]*)\"$", super::delete);
-        When("^the client issues a PATCH \"([^\"]*)\" with body \"([^\"]*)\"$", super::patch);
-        When("^the client issues a PATCH \"([^\"]*)\" with body \"([^\"]*)\" requesting \"([^\"]*)\"$", super::patchAccepting);
+        When("^the client issues a GET ([^\\s]+) requesting ([^\\s]+)$", super::get);
+        When("^the client issues a POST to ([^\\s]+) with payload ([^\\s]+)$", super::post);
+        When("^the client issues a POST to ([^\\s]+) with payload ([^\\s]+) requesting ([^\\s]+)$", super::postAccepting);
+        When("^the client issues a POST to ([^\\s]+) with payload ([^\\s]+) with field ([^\\s]+) having ([^\\s]+) requesting ([^\\s]+)$",
+          super::postAcceptingWithModifiedContent);
+        When("^the client issues a DELETE ([^\\s]+)$", super::delete);
+        When("^the client issues a PATCH ([^\\s]+) with body ([^\\s]+)$", super::patch);
+        When("^the client issues a PATCH ([^\\s]+) with body ([^\\s]+) requesting ([^\\s]+)$", super::patchAccepting);
+        When("^the client issues a PATCH to ([^\\s]+) with payload ([^\\s]+) with field ([^\\s]+) having ([^\\s]+) requesting ([^\\s]+)$",
+          super::patchAcceptingWithModifiedContent);
 
         Then("^the client receives status code of (\\d+)$", super::assertHttpStatus);
 
-        And("^response contains \"([^\"]*)\" header with value \"([^\"]*)\"$", super::assertHeader);
+        And("^response contains ([^\\s]+) header with value ([^\\s]+)$", super::assertHeader);
         And("^new resource location in Location header$", super::assertLocationHeaderPointsToNewResource);
         And("^the response body is empty$", super::assertResponseBodyIsEmpty);
-        And("^the response body contains resource matching \"([^\"]*)\"$", super::assertResponseBodyMatchesFixture);
+        And("^the response body contains resource matching ([^\\s]+)$", super::assertResponseBodyMatchesFixture);
         And("^the response body contains an empty list of payments$", super::assertResponseBodyContainsAnEmptyListOfPayments);
-        And("^the response body contains a list of payments matching \"([^\"]*)\"$", super::assertResponseBodyContainsPayments);
+        And("^the response body contains a list of payments matching ([^\\s]+)$", super::assertResponseBodyContainsPayments);
         And("^the response body contains bad request description$", super::assertResponseBodyContainsBadRequestDescription);
         And("^the response body contains validation error description$", super::assertResponseBodyContainsValidationErrorDescription);
 
-        And("^the interaction is documented as \"([^\"]*)\"$", super::documentInteraction);
+        And("^the interaction is documented as ([^\\s]+)$", super::documentInteraction);
 
     }
 
