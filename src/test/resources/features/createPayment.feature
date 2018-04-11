@@ -27,6 +27,8 @@ Feature: create payment resource
       | "validation/malformed.json"          |
       | "validation/empty.json"              |
       | "validation/non-numeric-amount.json" |
+      | "validation/invalid-currency.json"   |
+
 
   Scenario Outline: client issues a POST to /api/v1/payments with an invalid request
     When the client issues a POST to "/api/v1/payments" with payload <fixture> requesting "application/json"
@@ -36,11 +38,17 @@ Feature: create payment resource
     And the interaction is documented as "create-payment-bad-request"
 
     Examples:
-      | fixture                                   |
-      | "validation/empty-object.json"            |
-      | "validation/missing-amount.json"          |
-      | "validation/zero-amount.json"             |
-      | "validation/negative-amount.json"         |
-      | "validation/missing-version.json"         |
-      | "validation/missing-organisation-id.json" |
-      | "validation/missing-attributes.json"      |
+      | fixture                                       |
+      | "validation/empty-object.json"                |
+      | "validation/missing-amount.json"              |
+      | "validation/zero-amount.json"                 |
+      | "validation/negative-amount.json"             |
+      | "validation/missing-version.json"             |
+      | "validation/missing-organisation-id.json"     |
+      | "validation/missing-attributes.json"          |
+      | "validation/missing-currency.json"            |
+      | "validation/missing-beneficiary.json"         |
+      | "validation/missing-charges-information.json" |
+      | "validation/missing-fx.json"                  |
+      | "validation/missing-debtor.json"              |
+      | "validation/missing-sponsor.json"             |

@@ -56,19 +56,33 @@ public class Payment {
         @NotNull
         private BigDecimal amount;
 
+        @NotNull
+        private Currency currency;
+
+        @NotNull
+        @Valid
         @OneToOne(cascade = ALL)
         private Beneficiary beneficiaryParty;
 
+        @NotNull
+        @Valid
         @OneToOne(cascade = ALL)
         private Debtor debtorParty;
 
+        @NotNull
+        @Valid
         @OneToOne(cascade = ALL)
         private Sponsor sponsorParty;
 
+        @NotNull
+        @Valid
         private Charges chargesInformation;
-        private Currency currency;
-        private String endToEndReference;
+
+        @NotNull
+        @Valid
         private Forex fx;
+
+        private String endToEndReference;
         private String numericReference;
         private String paymentId;
         private String paymentPurpose;

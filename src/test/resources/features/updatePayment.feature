@@ -28,12 +28,18 @@ Feature: update payment resource
     And the response body contains resource matching "payment.json"
 
     Examples:
-      | fixture                                   |
-      | "validation/empty-object.json"            |
-      | "validation/missing-amount.json"          |
-      | "validation/missing-version.json"         |
-      | "validation/missing-organisation-id.json" |
-      | "validation/missing-attributes.json"      |
+      | fixture                                       |
+      | "validation/empty-object.json"                |
+      | "validation/missing-amount.json"              |
+      | "validation/missing-version.json"             |
+      | "validation/missing-organisation-id.json"     |
+      | "validation/missing-attributes.json"          |
+      | "validation/missing-currency.json"            |
+      | "validation/missing-beneficiary.json"         |
+      | "validation/missing-charges-information.json" |
+      | "validation/missing-fx.json"                  |
+      | "validation/missing-debtor.json"              |
+      | "validation/missing-sponsor.json"             |
 
   Scenario Outline: client issues a PATCH to /api/v1/payments/{paymentId} with malformed request
     Given payment "payment.json" exists with id "09a8fe0d-e239-4aff-8098-7923eadd0b98"
@@ -44,10 +50,12 @@ Feature: update payment resource
     And the interaction is documented as "update-payment-bad-request"
 
     Examples:
-      | fixture                     |
-      | "validation/malformed.json" |
-      | "validation/empty.json"     |
+      | fixture                              |
+      | "validation/malformed.json"          |
+      | "validation/empty.json"              |
       | "validation/non-numeric-amount.json" |
+      | "validation/invalid-currency.json"   |
+
 
   Scenario Outline: client issues a PATCH to /api/v1/payments/{paymentId} with an invalid request
     Given payment "payment.json" exists with id "09a8fe0d-e239-4aff-8098-7923eadd0b98"
@@ -58,7 +66,8 @@ Feature: update payment resource
     And the interaction is documented as "update-payment-bad-request"
 
     Examples:
-      | fixture                              |
-      | "validation/zero-amount.json"        |
-      | "validation/negative-amount.json"    |
+      | fixture                           |
+      | "validation/zero-amount.json"     |
+      | "validation/negative-amount.json" |
+
 
