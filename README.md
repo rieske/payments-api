@@ -25,7 +25,7 @@ And the API documentation will be made available at `build/docs/html5/index.html
 
 `docker-compose up --build`
 
-The HAL browser can be accessed at: http://localhost:8080/api/v1/payments
+The HAL browser can be accessed at: http://localhost:8080/api/v1/browser
 
 
 ### Implementation
