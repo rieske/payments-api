@@ -163,7 +163,7 @@ Feature: update payment resource
     Then the client receives status code of 400
     And response contains Content-Type header with value application/json;charset=UTF-8
     And the response body contains bad request description
-    And the interaction is documented as update-payment-bad-request
+    And the interaction is documented as update-payment-malformed-request
 
     Examples:
       | field               | invalid-value |
@@ -177,12 +177,11 @@ Feature: update payment resource
     Then the client receives status code of 400
     And response contains Content-Type header with value application/json;charset=UTF-8
     And the response body contains bad request description
-    And the interaction is documented as update-payment-bad-request
 
     Examples:
       | fixture                   |
-      | validation/malformed.json |
       | validation/empty.json     |
+      | validation/malformed.json |
 
   Scenario: client adds payment charges to a payment
     Given payment validation/no-sender-charges.json exists with id 09a8fe0d-e239-4aff-8098-7923eadd0b98

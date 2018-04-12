@@ -5,6 +5,7 @@ Feature: get payment resource
     When the client issues a GET /api/v1/payments/09a8fe0d-e239-4aff-8098-7923eadd0b98 accepting application/json
     Then the client receives status code of 404
     And the response body is empty
+    And the interaction is documented as get-payment-not-found
 
   Scenario: client issues a GET to /api/v1/payments/{paymentId} for existing payment id
     Given payment payment.json exists with id 09a8fe0d-e239-4aff-8098-7923eadd0b98

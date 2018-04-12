@@ -10,7 +10,7 @@
 '''
 === Create payment
 
-==== Without requesting content
+==== without requesting content
 
 .request
 include::{snippets}/create-payment/http-request.adoc[]
@@ -27,6 +27,18 @@ include::{snippets}/create-payment-with-response/http-request.adoc[]
 include::{snippets}/create-payment-with-response/http-response.adoc[]
 
 
+==== error responses
+
+.payment with the same id exists
+include::{snippets}/create-payment-conflict/http-response.adoc[]
+
+.request failed validation
+include::{snippets}/create-payment-bad-request/http-response.adoc[]
+
+.malformed request
+include::{snippets}/create-payment-malformed-request/http-response.adoc[]
+
+
 '''
 === Get payment
 
@@ -37,20 +49,32 @@ include::{snippets}/get-payment/http-request.adoc[]
 include::{snippets}/get-payment/http-response.adoc[]
 
 
+==== error responses
+
+.invalid payment id
+include::{snippets}/get-payment-not-found/http-response.adoc[]
+
+.invalid payment id
+include::{snippets}/get-payment-invalid-id/http-response.adoc[]
+
+
 '''
 === Get all payments
 
 .request
 include::{snippets}/get-all-payments/http-request.adoc[]
 
-.response
+.response when no payments exist
+include::{snippets}/get-all-payments-empty/http-response.adoc[]
+
+.response when payments exist
 include::{snippets}/get-all-payments/http-response.adoc[]
 
 
 '''
 === Update payment
 
-==== Without requesting content
+==== without requesting content
 
 .request
 include::{snippets}/update-payment/http-request.adoc[]
@@ -67,6 +91,14 @@ include::{snippets}/update-payment-with-response/http-request.adoc[]
 include::{snippets}/update-payment-with-response/http-response.adoc[]
 
 
+==== error responses
+
+.request failed validation
+include::{snippets}/update-payment-bad-request/http-response.adoc[]
+
+.malformed request
+include::{snippets}/update-payment-malformed-request/http-response.adoc[]
+
 '''
 === Delete payment
 
@@ -76,10 +108,18 @@ include::{snippets}/delete-payment/http-request.adoc[]
 .response
 include::{snippets}/delete-payment/http-response.adoc[]
 
+==== error responses
+
+.invalid payment id
+include::{snippets}/delete-payment-not-found/http-response.adoc[]
+
 
 '''
 == Schema
 
-.payment
+.request
+include::{snippets}/delete-payment/http-request.adoc[]
+
+.response
 include::{snippets}/payment-schema/response-body.adoc[]
 

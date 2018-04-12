@@ -21,6 +21,6 @@ spring:
     url: ${DATABASE_URL}/payments-db
     username: ${DATABASE_USER}
     password: ${DATABASE_PASSWORD}
-  jpa.hibernate.ddl-auto: validate
-  jpa.show-sql: true
-
+  jpa:
+    hibernate.ddl-auto: validate
+    show-sql: true

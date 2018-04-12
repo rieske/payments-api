@@ -81,7 +81,8 @@ asciidoctor {
     backends = ['html5']
     sourceDir 'src/main/asciidoc'
     attributes \
-      'snippets': snippetsDir
+      'snippets': snippetsDir,
+      'toclevels': 5
 }
 
 dependencies {

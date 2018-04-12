@@ -54,7 +54,6 @@ Feature: create payment resource
     Then the client receives status code of 400
     And response contains Content-Type header with value application/json;charset=UTF-8
     And the response body contains bad request description
-    And the interaction is documented as create-payment-bad-request
 
     Examples:
       | field                                                     | invalid-value |
@@ -88,7 +87,6 @@ Feature: create payment resource
     Then the client receives status code of 400
     And response contains Content-Type header with value application/json;charset=UTF-8
     And the response body contains validation error description
-    And the interaction is documented as create-payment-bad-request
 
     Examples:
       | field                                                     | invalid-value |
