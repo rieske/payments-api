@@ -2,6 +2,7 @@ package lt.rieske.payments.domain;
 
 import lombok.Data;
 import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.validator.constraints.Length;
 
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
@@ -44,6 +45,7 @@ public class Payment {
     @NotNull
     private Integer version;
 
+    @Length(min = 1, max = 255)
     @NotNull
     private String organisationId;
 
@@ -84,33 +86,42 @@ public class Payment {
         @Valid
         private Forex fx;
 
+        @Length(min = 1, max = 255)
         @NotNull
         private String endToEndReference;
 
+        @Length(min = 1, max = 255)
         @NotNull
         private String numericReference;
 
+        @Length(min = 1, max = 255)
         @NotNull
         private String paymentId;
 
+        @Length(min = 1, max = 255)
         @NotNull
         private String paymentPurpose;
 
+        @Length(min = 1, max = 255)
         @NotNull
         private String paymentScheme;
 
+        @Length(min = 1, max = 255)
         @NotNull
         private String paymentType;
 
         @NotNull
         private LocalDate processingDate;
 
+        @Length(min = 1, max = 255)
         @NotNull
         private String reference;
 
+        @Length(min = 1, max = 255)
         @NotNull
         private String schemePaymentType;
 
+        @Length(min = 1, max = 255)
         @NotNull
         private String schemePaymentSubType;
 
@@ -124,27 +135,34 @@ public class Payment {
             @GenericGenerator(name = "uuid", strategy = "uuid2")
             private UUID beneficiaryId;
 
+            @Length(min = 1, max = 255)
             @NotNull
             private String accountName;
 
+            @Length(min = 1, max = 255)
             @NotNull
             private String accountNumber;
 
+            @Length(min = 1, max = 255)
             @NotNull
             private String accountNumberCode;
 
             @NotNull
             private Integer accountType;
 
+            @Length(min = 1, max = 255)
             @NotNull
             private String address;
 
+            @Length(min = 1, max = 255)
             @NotNull
             private String bankId;
 
+            @Length(min = 1, max = 255)
             @NotNull
             private String bankIdCode;
 
+            @Length(min = 1, max = 255)
             @NotNull
             private String name;
         }
@@ -159,24 +177,31 @@ public class Payment {
             @GenericGenerator(name = "uuid", strategy = "uuid2")
             private UUID debtorId;
 
+            @Length(min = 1, max = 255)
             @NotNull
             private String accountName;
 
+            @Length(min = 1, max = 255)
             @NotNull
             private String accountNumber;
 
+            @Length(min = 1, max = 255)
             @NotNull
             private String accountNumberCode;
 
+            @Length(min = 1, max = 255)
             @NotNull
             private String address;
 
+            @Length(min = 1, max = 255)
             @NotNull
             private String bankId;
 
+            @Length(min = 1, max = 255)
             @NotNull
             private String bankIdCode;
 
+            @Length(min = 1, max = 255)
             @NotNull
             private String name;
         }
@@ -185,6 +210,7 @@ public class Payment {
         @Data
         public static class Charges {
 
+            @Length(min = 1, max = 255)
             @NotNull
             private String bearerCode;
 
@@ -222,6 +248,7 @@ public class Payment {
         @Data
         public static class Forex {
 
+            @Length(min = 1, max = 255)
             @NotNull
             private String contractReference;
 
@@ -248,12 +275,15 @@ public class Payment {
             @GenericGenerator(name = "uuid", strategy = "uuid2")
             private UUID sponsorId;
 
+            @Length(min = 1, max = 255)
             @NotNull
             private String accountNumber;
 
+            @Length(min = 1, max = 255)
             @NotNull
             private String bankId;
 
+            @Length(min = 1, max = 255)
             @NotNull
             private String bankIdCode;
         }

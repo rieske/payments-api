@@ -35,7 +35,7 @@ Feature: update payment resource
 
   Scenario Outline: client issues a PUT to /api/v1/payments/{paymentId} with partial update request
     Given payment payment.json exists with id 09a8fe0d-e239-4aff-8098-7923eadd0b98
-    When the client issues a PATCH to /api/v1/payments/09a8fe0d-e239-4aff-8098-7923eadd0b98 accepting application/json with payload payment.json with field <field> having <value>
+    When the client issues a PATCH to /api/v1/payments/09a8fe0d-e239-4aff-8098-7923eadd0b98 accepting application/json with payload payment.json with field <field> having "<value>"
     Then the client receives status code of 200
     And response contains Content-Type header with value application/json;charset=UTF-8
     And the response body contains resource matching payment.json
@@ -93,31 +93,73 @@ Feature: update payment resource
 
   Scenario Outline: client issues a PATCH to /api/v1/payments/{paymentId} with an invalid request
     Given payment payment.json exists with id 09a8fe0d-e239-4aff-8098-7923eadd0b98
-    When the client issues a PATCH to /api/v1/payments/09a8fe0d-e239-4aff-8098-7923eadd0b98 accepting application/json with payload payment.json with field <field> having <invalid-value>
+    When the client issues a PATCH to /api/v1/payments/09a8fe0d-e239-4aff-8098-7923eadd0b98 accepting application/json with payload payment.json with field <field> having "<invalid-value>"
     Then the client receives status code of 400
     And response contains Content-Type header with value application/json;charset=UTF-8
     And the response body contains validation error description
     And the interaction is documented as update-payment-bad-request
 
     Examples:
-      | field                                                   | invalid-value |
-      | type                                                    | foo           |
-      | attributes.amount                                       | 0             |
-      | attributes.amount                                       | -1            |
-      | attributes.amount                                       | 0             |
-      | attributes.amount                                       | -42           |
-      | attributes.charges_information.receiver_charges_amount  | -1            |
-      | attributes.fx.exchange_rate                             | 0             |
-      | attributes.fx.exchange_rate                             | -1            |
-      | attributes.fx.original_amount                           | 0             |
-      | attributes.fx.original_amount                           | -1            |
-      | attributes.charges_information.sender_charges[0].amount | 0             |
-      | attributes.charges_information.sender_charges[0].amount | -1            |
+      | field                                                     | invalid-value |
+      | type                                                      | foo           |
+      | attributes.amount                                         | 0             |
+      | attributes.amount                                         | -1            |
+      | attributes.amount                                         | 0             |
+      | attributes.amount                                         | -42           |
+      | attributes.charges_information.receiver_charges_amount    | -1            |
+      | attributes.fx.exchange_rate                               | 0             |
+      | attributes.fx.exchange_rate                               | -1            |
+      | attributes.fx.original_amount                             | 0             |
+      | attributes.fx.original_amount                             | -1            |
+      | attributes.charges_information.sender_charges[0].amount   | 0             |
+      | attributes.charges_information.sender_charges[0].amount   | -1            |
+      | type                                                      |               |
+      | version                                                   |               |
+      | organisation_id                                           |               |
+      | attributes.amount                                         |               |
+      | attributes.currency                                       |               |
+      | attributes.end_to_end_reference                           |               |
+      | attributes.numeric_reference                              |               |
+      | attributes.payment_id                                     |               |
+      | attributes.payment_purpose                                |               |
+      | attributes.payment_scheme                                 |               |
+      | attributes.payment_type                                   |               |
+      | attributes.processing_date                                |               |
+      | attributes.reference                                      |               |
+      | attributes.scheme_payment_type                            |               |
+      | attributes.scheme_payment_sub_type                        |               |
+      | attributes.beneficiary_party.account_name                 |               |
+      | attributes.beneficiary_party.account_number               |               |
+      | attributes.beneficiary_party.account_number_code          |               |
+      | attributes.beneficiary_party.account_type                 |               |
+      | attributes.beneficiary_party.address                      |               |
+      | attributes.beneficiary_party.bank_id                      |               |
+      | attributes.beneficiary_party.bank_id_code                 |               |
+      | attributes.beneficiary_party.name                         |               |
+      | attributes.debtor_party.account_name                      |               |
+      | attributes.debtor_party.account_number                    |               |
+      | attributes.debtor_party.account_number_code               |               |
+      | attributes.debtor_party.address                           |               |
+      | attributes.debtor_party.bank_id                           |               |
+      | attributes.debtor_party.bank_id_code                      |               |
+      | attributes.debtor_party.name                              |               |
+      | attributes.sponsor_party.account_number                   |               |
+      | attributes.sponsor_party.bank_id                          |               |
+      | attributes.sponsor_party.bank_id_code                     |               |
+      | attributes.charges_information.bearer_code                |               |
+      | attributes.charges_information.receiver_charges_amount    |               |
+      | attributes.charges_information.receiver_charges_currency  |               |
+      | attributes.fx.contract_reference                          |               |
+      | attributes.fx.exchange_rate                               |               |
+      | attributes.fx.original_amount                             |               |
+      | attributes.fx.original_currency                           |               |
+      | attributes.charges_information.sender_charges[0].amount   |               |
+      | attributes.charges_information.sender_charges[0].currency |               |
 
 
   Scenario Outline: client issues a PATCH to /api/v1/payments/{paymentId} with malformed request
     Given payment payment.json exists with id 09a8fe0d-e239-4aff-8098-7923eadd0b98
-    When the client issues a PATCH to /api/v1/payments/09a8fe0d-e239-4aff-8098-7923eadd0b98 accepting application/json with payload payment.json with field <field> having <invalid-value>
+    When the client issues a PATCH to /api/v1/payments/09a8fe0d-e239-4aff-8098-7923eadd0b98 accepting application/json with payload payment.json with field <field> having "<invalid-value>"
     Then the client receives status code of 400
     And response contains Content-Type header with value application/json;charset=UTF-8
     And the response body contains bad request description
@@ -188,7 +230,7 @@ Feature: update payment resource
     Then the client receives status code of 200
     And response contains Content-Type header with value application/json;charset=UTF-8
     And the response body contains jsonpaths matching
-      | $.attributes.charges_information.sender_charges.length()    | 0     |
+      | $.attributes.charges_information.sender_charges.length() | 0 |
 
 
   Scenario: client adds forex to a payment

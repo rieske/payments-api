@@ -50,7 +50,7 @@ Feature: create payment resource
       | validation/empty.json     |
 
   Scenario Outline: client issues a POST to /api/v1/payments with malformed request
-    When the client issues a POST to /api/v1/payments accepting application/json with payload payment.json with field <field> having <invalid-value>
+    When the client issues a POST to /api/v1/payments accepting application/json with payload payment.json with field <field> having "<invalid-value>"
     Then the client receives status code of 400
     And response contains Content-Type header with value application/json;charset=UTF-8
     And the response body contains bad request description
@@ -84,7 +84,7 @@ Feature: create payment resource
 
 
   Scenario Outline: client issues a POST to /api/v1/payments with an invalid request
-    When the client issues a POST to /api/v1/payments accepting application/json with payload payment.json with field <field> having <invalid-value>
+    When the client issues a POST to /api/v1/payments accepting application/json with payload payment.json with field <field> having "<invalid-value>"
     Then the client receives status code of 400
     And response contains Content-Type header with value application/json;charset=UTF-8
     And the response body contains validation error description
@@ -93,11 +93,14 @@ Feature: create payment resource
     Examples:
       | field                                                     | invalid-value |
       | type                                                      | null          |
+      | type                                                      |               |
       | type                                                      | foo           |
       | version                                                   | null          |
       | organisation_id                                           | null          |
+      | organisation_id                                           |               |
       | attributes                                                | null          |
       | attributes.amount                                         | null          |
+      | attributes.amount                                         |               |
       | attributes.amount                                         | 0             |
       | attributes.amount                                         | -42           |
       | attributes.currency                                       | null          |
@@ -106,38 +109,69 @@ Feature: create payment resource
       | attributes.debtor_party                                   | null          |
       | attributes.sponsor_party                                  | null          |
       | attributes.end_to_end_reference                           | null          |
+      | attributes.end_to_end_reference                           |               |
       | attributes.numeric_reference                              | null          |
+      | attributes.numeric_reference                              |               |
       | attributes.payment_id                                     | null          |
+      | attributes.payment_id                                     |               |
       | attributes.payment_purpose                                | null          |
+      | attributes.payment_purpose                                |               |
       | attributes.payment_scheme                                 | null          |
+      | attributes.payment_scheme                                 |               |
       | attributes.payment_type                                   | null          |
+      | attributes.payment_type                                   |               |
       | attributes.processing_date                                | null          |
+      | attributes.processing_date                                |               |
       | attributes.reference                                      | null          |
+      | attributes.reference                                      |               |
       | attributes.scheme_payment_type                            | null          |
+      | attributes.scheme_payment_type                            |               |
       | attributes.scheme_payment_sub_type                        | null          |
+      | attributes.scheme_payment_sub_type                        |               |
       | attributes.beneficiary_party.account_name                 | null          |
+      | attributes.beneficiary_party.account_name                 |               |
       | attributes.beneficiary_party.account_number               | null          |
+      | attributes.beneficiary_party.account_number               |               |
       | attributes.beneficiary_party.account_number_code          | null          |
+      | attributes.beneficiary_party.account_number_code          |               |
       | attributes.beneficiary_party.account_type                 | null          |
+      | attributes.beneficiary_party.account_type                 |               |
       | attributes.beneficiary_party.address                      | null          |
+      | attributes.beneficiary_party.address                      |               |
       | attributes.beneficiary_party.bank_id                      | null          |
+      | attributes.beneficiary_party.bank_id                      |               |
       | attributes.beneficiary_party.bank_id_code                 | null          |
+      | attributes.beneficiary_party.bank_id_code                 |               |
       | attributes.beneficiary_party.name                         | null          |
+      | attributes.beneficiary_party.name                         |               |
       | attributes.debtor_party.account_name                      | null          |
+      | attributes.debtor_party.account_name                      |               |
       | attributes.debtor_party.account_number                    | null          |
+      | attributes.debtor_party.account_number                    |               |
       | attributes.debtor_party.account_number_code               | null          |
+      | attributes.debtor_party.account_number_code               |               |
       | attributes.debtor_party.address                           | null          |
+      | attributes.debtor_party.address                           |               |
       | attributes.debtor_party.bank_id                           | null          |
+      | attributes.debtor_party.bank_id                           |               |
       | attributes.debtor_party.bank_id_code                      | null          |
+      | attributes.debtor_party.bank_id_code                      |               |
       | attributes.debtor_party.name                              | null          |
+      | attributes.debtor_party.name                              |               |
       | attributes.sponsor_party.account_number                   | null          |
+      | attributes.sponsor_party.account_number                   |               |
       | attributes.sponsor_party.bank_id                          | null          |
+      | attributes.sponsor_party.bank_id                          |               |
       | attributes.sponsor_party.bank_id_code                     | null          |
+      | attributes.sponsor_party.bank_id_code                     |               |
       | attributes.charges_information.bearer_code                | null          |
+      | attributes.charges_information.bearer_code                |               |
       | attributes.charges_information.receiver_charges_amount    | null          |
       | attributes.charges_information.receiver_charges_amount    | -1            |
       | attributes.charges_information.receiver_charges_currency  | null          |
+      | attributes.charges_information.receiver_charges_currency  |               |
       | attributes.fx.contract_reference                          | null          |
+      | attributes.fx.contract_reference                          |               |
       | attributes.fx.exchange_rate                               | null          |
       | attributes.fx.exchange_rate                               | 0             |
       | attributes.fx.exchange_rate                               | -1            |

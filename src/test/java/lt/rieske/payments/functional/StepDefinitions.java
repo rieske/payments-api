@@ -28,13 +28,13 @@ public class StepDefinitions extends MockMvcSteps implements En {
         When("^the client issues a GET ([^\\s]+) accepting ([^\\s]+)$", super::get);
         When("^the client issues a POST to ([^\\s]+) with payload ([^\\s]+)$", super::post);
         When("^the client issues a POST to ([^\\s]+) accepting ([^\\s]+) with payload ([^\\s]+)$", super::postAccepting);
-        When("^the client issues a POST to ([^\\s]+) accepting ([^\\s]+) with payload ([^\\s]+) with field ([^\\s]+) having ([^\\s]+)$",
+        When("^the client issues a POST to ([^\\s]+) accepting ([^\\s]+) with payload ([^\\s]+) with field ([^\\s]+) having \"(.*)\"$",
           super::postAcceptingWithModifiedContent);
         When("^the client issues a DELETE ([^\\s]+)$", super::delete);
         When("^the client issues a PATCH ([^\\s]+) with body ([^\\s]+)$", super::patch);
         When("^the client issues a PATCH ([^\\s]+) accepting ([^\\s]+) with body ([^\\s]+)$", super::patchAccepting);
         When("^the client issues a PATCH ([^\\s]+) accepting ([^\\s]+) with body:$", super::patchAcceptingWithBody);
-        When("^the client issues a PATCH to ([^\\s]+) accepting ([^\\s]+) with payload ([^\\s]+) with field ([^\\s]+) having ([^\\s]+)$",
+        When("^the client issues a PATCH to ([^\\s]+) accepting ([^\\s]+) with payload ([^\\s]+) with field ([^\\s]+) having \"(.*)\"$",
           super::patchAcceptingWithModifiedContent);
 
         Then("^the client receives status code of (\\d+)$", super::assertHttpStatus);
