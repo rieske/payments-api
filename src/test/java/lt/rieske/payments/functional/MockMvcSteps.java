@@ -4,7 +4,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jayway.jsonpath.DocumentContext;
 import com.jayway.jsonpath.JsonPath;
-import cucumber.api.DataTable;
+import io.cucumber.datatable.DataTable;
 import lt.rieske.payments.domain.Payment;
 import lt.rieske.payments.domain.PaymentsRepository;
 import org.apache.commons.codec.Charsets;
@@ -23,6 +23,7 @@ import org.springframework.web.context.WebApplicationContext;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -184,8 +185,9 @@ public abstract class MockMvcSteps {
         resultActions.andExpect(MockMvcResultMatchers.content().json(expectedContent));
     }
 
-    void assertResponseBodyContainsJsonpathMatching(DataTable jsonPaths) {
-        jsonPaths.asMap(String.class, String.class).forEach(this::matchJsonPath);
+    void assertResponseBodyContainsJsonpathMatching(DataTable jsonPathsTable) {
+        Map<String, String> jsonPaths = jsonPathsTable.asMap(String.class, String.class);
+        jsonPaths.forEach(this::matchJsonPath);
     }
 
     void assertResponseBodyContainsBadRequestDescription() throws Exception {

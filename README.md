@@ -4,9 +4,9 @@ REST API for storing, updating and retrieving Payment resources
 
 ### Prerequisites
 
-- JDK9
-- docker `17.12.0-ce` or later
-- docker-compose `1.16.1` or later
+- JDK11
+- docker `18.09.5` or later
+- docker-compose `1.23.2` or later
 
 
 ### Building

@@ -1,9 +1,8 @@
 package lt.rieske.payments.functional;
 
-import cucumber.api.PendingException;
-import cucumber.api.java.After;
-import cucumber.api.java.Before;
-import cucumber.api.java8.En;
+import io.cucumber.java.After;
+import io.cucumber.java.Before;
+import io.cucumber.java8.En;
 
 public class StepDefinitions extends MockMvcSteps implements En {
 
@@ -28,13 +27,13 @@ public class StepDefinitions extends MockMvcSteps implements En {
         When("^the client issues a GET ([^\\s]+) accepting ([^\\s]+)$", super::get);
         When("^the client issues a POST to ([^\\s]+) with payload ([^\\s]+)$", super::post);
         When("^the client issues a POST to ([^\\s]+) accepting ([^\\s]+) with payload ([^\\s]+)$", super::postAccepting);
-        When("^the client issues a POST to ([^\\s]+) accepting ([^\\s]+) with payload ([^\\s]+) with field ([^\\s]+) having \"(.*)\"$",
+        When("the client issues a POST to {word} accepting {word} with payload {word} with field {word} having {word}",
           super::postAcceptingWithModifiedContent);
         When("^the client issues a DELETE ([^\\s]+)$", super::delete);
         When("^the client issues a PATCH ([^\\s]+) with body ([^\\s]+)$", super::patch);
         When("^the client issues a PATCH ([^\\s]+) accepting ([^\\s]+) with body ([^\\s]+)$", super::patchAccepting);
         When("^the client issues a PATCH ([^\\s]+) accepting ([^\\s]+) with body:$", super::patchAcceptingWithBody);
-        When("^the client issues a PATCH to ([^\\s]+) accepting ([^\\s]+) with payload ([^\\s]+) with field ([^\\s]+) having \"(.*)\"$",
+        When("the client issues a PATCH to {word} accepting {word} with payload {word} with field {word} having {word}",
           super::patchAcceptingWithModifiedContent);
 
         Then("^the client receives status code of (\\d+)$", super::assertHttpStatus);

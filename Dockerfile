@@ -1,10 +1,11 @@
-FROM anapsix/alpine-java:9_jdk
+FROM openjdk:11.0.3-jdk-slim
 
 EXPOSE 8080 1099 5005
 ADD build/libs/*.jar /opt/service/service.jar
 WORKDIR /opt/service
 
-ENTRYPOINT exec java -jar --add-modules java.se.ee \
+ENTRYPOINT exec java -jar \
+            --illegal-access=deny \
             ${JAVA_OPTS} \
             -Djava.rmi.server.hostname=${JMX_HOSTNAME:-localhost} \
             -Dcom.sun.management.jmxremote.ssl=false \

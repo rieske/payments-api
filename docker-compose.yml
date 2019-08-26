@@ -1,5 +1,5 @@
 ---
-version: "3.3"
+version: "3.7"
 
 services:
 
@@ -14,12 +14,9 @@ services:
     build: .
     ports:
     - 8080:8080
-    - 1099:1099
-    - 5005:5005
     links:
       - db
     environment:
-     JAVA_OPTS: -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5005
      JMX_PORT: 1099
      DATABASE_URL: jdbc:postgresql://db:5432
      DATABASE_USER: payments-user
