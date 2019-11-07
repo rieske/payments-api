@@ -1,53 +1,64 @@
 package lt.rieske.payments;
 
-import com.palantir.docker.compose.DockerComposeRule;
-import com.palantir.docker.compose.connection.waiting.HealthChecks;
 import io.restassured.RestAssured;
-import org.apache.commons.io.Charsets;
-import org.apache.commons.io.IOUtils;
-import org.junit.Before;
-import org.junit.ClassRule;
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
 import org.junit.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.testcontainers.containers.DockerComposeContainer;
+import org.testcontainers.containers.output.Slf4jLogConsumer;
+import org.testcontainers.containers.wait.strategy.Wait;
 
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 
 import static io.restassured.RestAssured.given;
 import static io.restassured.RestAssured.when;
 import static org.hamcrest.Matchers.empty;
+import static org.hamcrest.Matchers.emptyOrNullString;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasSize;
-import static org.hamcrest.Matchers.isEmptyOrNullString;
 import static org.hamcrest.Matchers.notNullValue;
 
 public class ComponentSmokeTest {
 
-    private static final String DATABASE_SERVICE = "db";
-    private static final String PAYMENTS_API = "payments-api";
+    private static final Logger LOG = LoggerFactory.getLogger(ComponentSmokeTest.class);
 
+    private static final String SERVICE_CONTAINER = "payments-api_1";
     private static final int SERVICE_PORT = 8080;
-    private static final String SERVICE_URI_FORMAT = "http://$HOST:$EXTERNAL_PORT";
 
-    @ClassRule
-    public static DockerComposeRule docker = DockerComposeRule.builder()
-      .file("docker-compose.yml")
-      .waitingForService(DATABASE_SERVICE, HealthChecks.toHaveAllPortsOpen())
-      .waitingForService(PAYMENTS_API, HealthChecks.toHaveAllPortsOpen())
-      .waitingForService(PAYMENTS_API, HealthChecks
-        .toRespond2xxOverHttp(SERVICE_PORT, (port) -> port.inFormat("http://$HOST:$EXTERNAL_PORT/ping")))
-      .build();
+    private static DockerComposeContainer environment =
+            new DockerComposeContainer(Paths.get("docker-compose.yml").toFile())
+                    .withLocalCompose(true)
+                    .withLogConsumer(SERVICE_CONTAINER, new Slf4jLogConsumer(LOG).withPrefix(SERVICE_CONTAINER))
+                    .withExposedService(SERVICE_CONTAINER, SERVICE_PORT, Wait.forListeningPort())
+                    .withExposedService(SERVICE_CONTAINER, SERVICE_PORT, Wait.forHttp("/actuator/health").forStatusCode(200));
 
-    @Before
-    public void setUp() {
-        RestAssured.baseURI = docker.containers().container(PAYMENTS_API).port(SERVICE_PORT)
-          .inFormat(SERVICE_URI_FORMAT);
+    @BeforeClass
+    public static void setUp() {
+        environment.start();
         RestAssured.enableLoggingOfRequestAndResponseIfValidationFails();
+        RestAssured.baseURI = serviceUrl();
+    }
+
+    @AfterClass
+    public static void teardown() {
+        environment.stop();
+    }
+
+    private static String serviceUrl() {
+        return String.format("http://%s:%d",
+                environment.getServiceHost(SERVICE_CONTAINER, SERVICE_PORT),
+                environment.getServicePort(SERVICE_CONTAINER, SERVICE_PORT));
     }
 
     @Test
     public void serviceHasStartedAndIsHealthy() {
         // @formatter:off
         when()
-          .get("/healthcheck")
+          .get("/actuator/health")
         .then()
           .statusCode(200)
           .body("status", equalTo("UP"))
@@ -166,7 +177,7 @@ public class ComponentSmokeTest {
         .then()
           .log().all()
           .statusCode(204)
-          .body(isEmptyOrNullString());
+          .body(emptyOrNullString());
         // @formatter:on
     }
 
@@ -177,11 +188,11 @@ public class ComponentSmokeTest {
         .then()
           .log().all()
           .statusCode(404)
-          .body(isEmptyOrNullString());
+          .body(emptyOrNullString());
         // @formatter:on
     }
 
     private String fileBody(String path) throws IOException {
-        return IOUtils.resourceToString(path, Charsets.UTF_8);
+        return Files.readString(Paths.get("src/component-test/resources/" + path));
     }
 }

@@ -1,5 +1,7 @@
 # payments-api
 
+[![Actions Status](https://github.com/rieske/payments-api/workflows/build/badge.svg)](https://github.com/rieske/payments-api/actions)
+
 REST API for storing, updating and retrieving Payment resources
 
 ### Prerequisites

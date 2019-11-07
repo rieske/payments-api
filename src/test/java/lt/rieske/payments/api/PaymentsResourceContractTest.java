@@ -36,9 +36,6 @@ public class PaymentsResourceContractTest {
     @Autowired
     private PaymentsRepository repository;
 
-    @Autowired
-    private JdbcTemplate jdbcTemplate;
-
     @TestTarget
     public final Target target = new HttpTarget(8888);
 

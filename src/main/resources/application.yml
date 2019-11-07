@@ -1,7 +1,4 @@
 management:
-  endpoints.web:
-    base-path: /
-    path-mapping.health: healthcheck
   endpoint.health.show-details: always
   metrics.export.graphite:
     enabled: ${METRICS_EXPORT_ENABLED:false}

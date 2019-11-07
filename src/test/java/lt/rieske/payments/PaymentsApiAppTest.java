@@ -28,7 +28,7 @@ public class PaymentsApiAppTest {
 
     @Test
     public void healthcheckEndpointIsExposed() {
-        ResponseEntity<String> response = restTemplate.getForEntity("/healthcheck", String.class);
+        ResponseEntity<String> response = restTemplate.getForEntity("/actuator/health", String.class);
 
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
     }
