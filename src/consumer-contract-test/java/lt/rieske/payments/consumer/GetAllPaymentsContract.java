@@ -2,7 +2,6 @@ package lt.rieske.payments.consumer;
 
 import au.com.dius.pact.consumer.Pact;
 import au.com.dius.pact.consumer.PactVerification;
-import au.com.dius.pact.consumer.dsl.PactDslJsonArray;
 import au.com.dius.pact.consumer.dsl.PactDslJsonBody;
 import au.com.dius.pact.consumer.dsl.PactDslWithProvider;
 import au.com.dius.pact.model.RequestResponsePact;
@@ -11,7 +10,6 @@ import org.junit.Test;
 import javax.ws.rs.HttpMethod;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -34,7 +32,7 @@ public class GetAllPaymentsContract extends PaymentsContract {
                         .closeArray()
                         .closeObject()
                         .asBody())
-                .matchHeader("Content-Type", "application/json;charset=UTF-8")
+                .matchHeader("Content-Type", "application/json")
                 .toPact();
     }
 
@@ -60,7 +58,7 @@ public class GetAllPaymentsContract extends PaymentsContract {
                         .array("payments").closeArray()
                         .closeObject()
                         .asBody())
-                .matchHeader("Content-Type", "application/json;charset=UTF-8")
+                .matchHeader("Content-Type", "application/json")
                 .toPact();
     }
 

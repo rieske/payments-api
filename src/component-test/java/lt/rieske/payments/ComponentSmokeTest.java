@@ -51,8 +51,8 @@ public class ComponentSmokeTest {
         .then()
           .statusCode(200)
           .body("status", equalTo("UP"))
-          .body("details.db.status", equalTo("UP"))
-          .body("details.db.details.database", equalTo("PostgreSQL"));
+          .body("components.db.status", equalTo("UP"))
+          .body("components.db.details.database", equalTo("PostgreSQL"));
         // @formatter:on
     }
 

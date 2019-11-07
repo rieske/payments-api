@@ -4,14 +4,11 @@ import au.com.dius.pact.consumer.Pact;
 import au.com.dius.pact.consumer.PactVerification;
 import au.com.dius.pact.consumer.dsl.PactDslWithProvider;
 import au.com.dius.pact.model.RequestResponsePact;
-import org.apache.commons.codec.Charsets;
-import org.apache.commons.io.IOUtils;
 import org.junit.Test;
 
 import javax.ws.rs.HttpMethod;
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.core.Response;
-import java.io.IOException;
 
 import static org.assertj.core.api.Assertions.assertThat;
 

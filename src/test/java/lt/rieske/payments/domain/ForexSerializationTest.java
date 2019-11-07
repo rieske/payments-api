@@ -1,6 +1,5 @@
 package lt.rieske.payments.domain;
 
-import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lt.rieske.payments.infrastructure.config.ApplicationConfiguration;
 import org.apache.commons.codec.Charsets;
@@ -15,9 +14,6 @@ import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.io.IOException;
-import java.util.List;
-
-import static org.assertj.core.api.Assertions.assertThat;
 
 
 @RunWith(SpringRunner.class)

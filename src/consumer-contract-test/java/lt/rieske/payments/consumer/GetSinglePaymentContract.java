@@ -2,7 +2,6 @@ package lt.rieske.payments.consumer;
 
 import au.com.dius.pact.consumer.Pact;
 import au.com.dius.pact.consumer.PactVerification;
-import au.com.dius.pact.consumer.dsl.PactDslJsonBody;
 import au.com.dius.pact.consumer.dsl.PactDslWithProvider;
 import au.com.dius.pact.model.RequestResponsePact;
 import org.junit.Test;
@@ -10,7 +9,6 @@ import org.junit.Test;
 import javax.ws.rs.HttpMethod;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import java.math.BigDecimal;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -49,7 +47,7 @@ public class GetSinglePaymentContract extends PaymentsContract {
           .method(HttpMethod.GET)
           .willRespondWith()
           .status(200)
-          .matchHeader("Content-Type", "application/json;charset=UTF-8")
+          .matchHeader("Content-Type", "application/json")
           .body(paymentSchema(PAYMENT_ID))
           .toPact();
     }

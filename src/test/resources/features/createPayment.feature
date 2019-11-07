@@ -17,7 +17,7 @@ Feature: create payment resource
   Scenario Outline: client issues a POST to /api/v1/payments accepting json
     When the client issues a POST to /api/v1/payments accepting application/json with payload <fixture>
     Then the client receives status code of 201
-    And response contains Content-Type header with value application/json;charset=UTF-8
+    And response contains Content-Type header with value application/json
     And new resource location in Location header
     And the response body contains resource matching <fixture>
     And the interaction is documented as create-payment-with-response
@@ -40,7 +40,7 @@ Feature: create payment resource
   Scenario Outline: client issues a POST to /api/v1/payments with malformed request
     When the client issues a POST to /api/v1/payments accepting application/json with payload <fixture>
     Then the client receives status code of 400
-    And response contains Content-Type header with value application/json;charset=UTF-8
+    And response contains Content-Type header with value application/json
     And the response body contains bad request description
     And the interaction is documented as create-payment-malformed-request
 
@@ -52,7 +52,7 @@ Feature: create payment resource
   Scenario Outline: client issues a POST to /api/v1/payments with malformed request
     When the client issues a POST to /api/v1/payments accepting application/json with payload payment.json with field <field> having <invalid-value>
     Then the client receives status code of 400
-    And response contains Content-Type header with value application/json;charset=UTF-8
+    And response contains Content-Type header with value application/json
     And the response body contains bad request description
 
     Examples:
@@ -73,7 +73,7 @@ Feature: create payment resource
   Scenario Outline: client issues a POST to /api/v1/payments with an invalid request
     When the client issues a POST to /api/v1/payments accepting application/json with payload <fixture>
     Then the client receives status code of 400
-    And response contains Content-Type header with value application/json;charset=UTF-8
+    And response contains Content-Type header with value application/json
     And the response body contains validation error description
     And the interaction is documented as create-payment-bad-request
 
@@ -85,7 +85,7 @@ Feature: create payment resource
   Scenario Outline: client issues a POST to /api/v1/payments with an invalid request
     When the client issues a POST to /api/v1/payments accepting application/json with payload payment.json with field <field> having <invalid-value>
     Then the client receives status code of 400
-    And response contains Content-Type header with value application/json;charset=UTF-8
+    And response contains Content-Type header with value application/json
     And the response body contains validation error description
 
     Examples:

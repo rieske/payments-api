@@ -9,7 +9,6 @@ import org.junit.Test;
 import javax.ws.rs.HttpMethod;
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.core.Response;
-import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -63,8 +62,5 @@ public class UpdatePaymentContract extends PaymentsContract {
         assertThat(response.getStatus()).isEqualTo(404);
         assertThat(response.readEntity(String.class)).isEmpty();
     }
-
-
-    private final String differentExistingPaymentId = UUID.randomUUID().toString();
 
 }

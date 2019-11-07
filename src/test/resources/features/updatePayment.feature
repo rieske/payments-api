@@ -24,7 +24,7 @@ Feature: update payment resource
     Given payment payment.json exists with id 09a8fe0d-e239-4aff-8098-7923eadd0b98
     When the client issues a PATCH /api/v1/payments/09a8fe0d-e239-4aff-8098-7923eadd0b98 accepting application/json with body <fixture>
     Then the client receives status code of 200
-    And response contains Content-Type header with value application/json;charset=UTF-8
+    And response contains Content-Type header with value application/json
     And the response body contains resource matching payment.json
 
     Examples:
@@ -37,7 +37,7 @@ Feature: update payment resource
     Given payment payment.json exists with id 09a8fe0d-e239-4aff-8098-7923eadd0b98
     When the client issues a PATCH to /api/v1/payments/09a8fe0d-e239-4aff-8098-7923eadd0b98 accepting application/json with payload payment.json with field <field> having <value>
     Then the client receives status code of 200
-    And response contains Content-Type header with value application/json;charset=UTF-8
+    And response contains Content-Type header with value application/json
     And the response body contains resource matching payment.json
 
     Examples:
@@ -95,7 +95,7 @@ Feature: update payment resource
     Given payment payment.json exists with id 09a8fe0d-e239-4aff-8098-7923eadd0b98
     When the client issues a PATCH to /api/v1/payments/09a8fe0d-e239-4aff-8098-7923eadd0b98 accepting application/json with payload payment.json with field <field> having <invalid-value>
     Then the client receives status code of 400
-    And response contains Content-Type header with value application/json;charset=UTF-8
+    And response contains Content-Type header with value application/json
     And the response body contains validation error description
     And the interaction is documented as update-payment-bad-request
 
@@ -119,7 +119,7 @@ Feature: update payment resource
     Given payment payment.json exists with id 09a8fe0d-e239-4aff-8098-7923eadd0b98
     When the client issues a PATCH to /api/v1/payments/09a8fe0d-e239-4aff-8098-7923eadd0b98 accepting application/json with payload payment.json with field <field> having <invalid-value>
     Then the client receives status code of 400
-    And response contains Content-Type header with value application/json;charset=UTF-8
+    And response contains Content-Type header with value application/json
     And the response body contains bad request description
     And the interaction is documented as update-payment-malformed-request
 
@@ -133,7 +133,7 @@ Feature: update payment resource
     Given payment payment.json exists with id 09a8fe0d-e239-4aff-8098-7923eadd0b98
     When the client issues a PATCH /api/v1/payments/09a8fe0d-e239-4aff-8098-7923eadd0b98 accepting application/json with body <fixture>
     Then the client receives status code of 400
-    And response contains Content-Type header with value application/json;charset=UTF-8
+    And response contains Content-Type header with value application/json
     And the response body contains bad request description
 
     Examples:
@@ -163,7 +163,7 @@ Feature: update payment resource
       }
     """
     Then the client receives status code of 200
-    And response contains Content-Type header with value application/json;charset=UTF-8
+    And response contains Content-Type header with value application/json
     And the response body contains jsonpaths matching
       | $.attributes.charges_information.sender_charges.length()    | 2     |
       | $.attributes.charges_information.sender_charges[0].amount   | 5.00  |
@@ -185,7 +185,7 @@ Feature: update payment resource
       }
     """
     Then the client receives status code of 200
-    And response contains Content-Type header with value application/json;charset=UTF-8
+    And response contains Content-Type header with value application/json
     And the response body contains jsonpaths matching
       | $.attributes.charges_information.sender_charges.length() | 0 |
 
@@ -206,7 +206,7 @@ Feature: update payment resource
       }
     """
     Then the client receives status code of 200
-    And response contains Content-Type header with value application/json;charset=UTF-8
+    And response contains Content-Type header with value application/json
     And the response body contains jsonpaths matching
       | $.attributes.fx.contract_reference | FX12345 |
       | $.attributes.fx.exchange_rate      | 2.00000 |
@@ -225,7 +225,7 @@ Feature: update payment resource
       }
     """
     Then the client receives status code of 200
-    And response contains Content-Type header with value application/json;charset=UTF-8
+    And response contains Content-Type header with value application/json
     And the response body contains jsonpaths matching
       | $.attributes.fx | null |
 

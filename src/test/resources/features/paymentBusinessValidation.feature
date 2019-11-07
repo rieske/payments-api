@@ -3,7 +3,7 @@ Feature: payment business validation rules
   Scenario: can not create a payment with forex currency the same as payment currency
     When the client issues a POST to /api/v1/payments accepting application/json with payload validation/payment-with-forex-same-as-currency.json
     Then the client receives status code of 400
-    And response contains Content-Type header with value application/json;charset=UTF-8
+    And response contains Content-Type header with value application/json
     And the response body contains jsonpaths matching
       | $.message | Forex currency can not be the same as payment currency |
 
@@ -25,7 +25,7 @@ Feature: payment business validation rules
       }
     """
     Then the client receives status code of 400
-    And response contains Content-Type header with value application/json;charset=UTF-8
+    And response contains Content-Type header with value application/json
     And the response body contains jsonpaths matching
       | $.message | Forex currency can not be the same as payment currency |
 
@@ -46,6 +46,6 @@ Feature: payment business validation rules
       }
     """
     Then the client receives status code of 400
-    And response contains Content-Type header with value application/json;charset=UTF-8
+    And response contains Content-Type header with value application/json
     And the response body contains jsonpaths matching
       | $.message | Forex currency can not be the same as payment currency |
