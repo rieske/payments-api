@@ -1,6 +1,6 @@
-FROM openjdk:11.0.3-jdk-slim
+FROM openjdk:11.0.5-jdk-slim
 
-EXPOSE 8080 1099 5005
+EXPOSE 8080 1099
 ADD build/libs/*.jar /opt/service/service.jar
 WORKDIR /opt/service
 
