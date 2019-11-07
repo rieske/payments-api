@@ -1,9 +1,10 @@
 package lt.rieske.payments.consumer;
 
-import au.com.dius.pact.consumer.Pact;
-import au.com.dius.pact.consumer.PactVerification;
+
 import au.com.dius.pact.consumer.dsl.PactDslWithProvider;
-import au.com.dius.pact.model.RequestResponsePact;
+import au.com.dius.pact.consumer.junit.PactVerification;
+import au.com.dius.pact.core.model.RequestResponsePact;
+import au.com.dius.pact.core.model.annotations.Pact;
 import org.junit.Test;
 
 import javax.ws.rs.HttpMethod;

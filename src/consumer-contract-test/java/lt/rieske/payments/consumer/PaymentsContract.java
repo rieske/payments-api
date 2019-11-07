@@ -1,7 +1,7 @@
 package lt.rieske.payments.consumer;
 
-import au.com.dius.pact.consumer.PactProviderRuleMk2;
 import au.com.dius.pact.consumer.dsl.PactDslJsonBody;
+import au.com.dius.pact.consumer.junit.PactProviderRule;
 import org.apache.commons.codec.Charsets;
 import org.apache.commons.io.IOUtils;
 import org.glassfish.jersey.apache.connector.ApacheConnectorProvider;
@@ -33,7 +33,7 @@ public class PaymentsContract {
     }
 
     @Rule
-    public PactProviderRuleMk2 mockProvider = new PactProviderRuleMk2("payments-api", this);
+    public PactProviderRule mockProvider = new PactProviderRule("payments-api", this);
 
     WebTarget paymentsApi() {
         return ClientBuilder.newClient(new ClientConfig().connectorProvider(new ApacheConnectorProvider()))
