@@ -2,16 +2,13 @@ package lt.rieske.payments.consumer;
 
 import au.com.dius.pact.consumer.dsl.PactDslJsonBody;
 import au.com.dius.pact.consumer.junit.PactProviderRule;
+import io.restassured.RestAssured;
 import org.apache.commons.codec.Charsets;
-import org.glassfish.jersey.apache.connector.ApacheConnectorProvider;
-import org.glassfish.jersey.client.ClientConfig;
+import org.junit.Before;
 import org.junit.Rule;
 
-import javax.ws.rs.client.ClientBuilder;
-import javax.ws.rs.client.WebTarget;
 import java.io.IOException;
 import java.io.UncheckedIOException;
-import java.net.URI;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
@@ -36,10 +33,10 @@ public class PaymentsContract {
     @Rule
     public PactProviderRule mockProvider = new PactProviderRule("payments-api", this);
 
-    WebTarget paymentsApi() {
-        return ClientBuilder.newClient(new ClientConfig().connectorProvider(new ApacheConnectorProvider()))
-                .target(URI.create("http://localhost:" + mockProvider.getPort()))
-                .path(PAYMENTS_BASE_PATH);
+    @Before
+    public void init() {
+        RestAssured.enableLoggingOfRequestAndResponseIfValidationFails();
+        RestAssured.baseURI = "http://localhost:" + mockProvider.getPort() + PAYMENTS_BASE_PATH;
     }
 
     PactDslJsonBody paymentSchema(String paymentId) {

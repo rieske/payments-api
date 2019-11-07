@@ -6,10 +6,7 @@ import au.com.dius.pact.core.model.RequestResponsePact;
 import au.com.dius.pact.core.model.annotations.Pact;
 import org.junit.Test;
 
-import javax.ws.rs.HttpMethod;
-import javax.ws.rs.core.Response;
-
-import static org.assertj.core.api.Assertions.assertThat;
+import static io.restassured.RestAssured.when;
 
 public class DeletePaymentContract extends PaymentsContract {
 
@@ -19,7 +16,7 @@ public class DeletePaymentContract extends PaymentsContract {
                 .given("payment exists", "paymentId", PAYMENT_ID)
                 .uponReceiving("delete payment")
                 .path(PAYMENTS_BASE_PATH + PAYMENT_ID)
-                .method(HttpMethod.DELETE)
+                .method("DELETE")
                 .willRespondWith()
                 .status(204)
                 .toPact();
@@ -28,11 +25,12 @@ public class DeletePaymentContract extends PaymentsContract {
     @Test
     @PactVerification(fragment = "deletePaymentContract")
     public void deletesExistingPayment() {
-
-        Response response = paymentsApi().path(PAYMENT_ID)
-                .request().delete();
-
-        assertThat(response.getStatus()).isEqualTo(204);
+        // @formatter:off
+        when()
+            .delete(PAYMENT_ID)
+        .then()
+            .statusCode(204);
+        // @formatter:on
     }
 
     @Pact(consumer = CONSUMER)
@@ -40,7 +38,7 @@ public class DeletePaymentContract extends PaymentsContract {
         return builder
                 .uponReceiving("delete payment")
                 .path(PAYMENTS_BASE_PATH + PAYMENT_ID)
-                .method(HttpMethod.DELETE)
+                .method("DELETE")
                 .willRespondWith()
                 .status(404)
                 .toPact();
@@ -49,10 +47,11 @@ public class DeletePaymentContract extends PaymentsContract {
     @Test
     @PactVerification(fragment = "deleteNonExistingPaymentContract")
     public void deletesNonExistingPayment() {
-
-        Response response = paymentsApi().path(PAYMENT_ID)
-                .request().delete();
-
-        assertThat(response.getStatus()).isEqualTo(404);
+        // @formatter:off
+        when()
+            .delete(PAYMENT_ID)
+        .then()
+            .statusCode(404);
+        // @formatter:on
     }
 }

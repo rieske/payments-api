@@ -5,13 +5,11 @@ import au.com.dius.pact.consumer.dsl.PactDslWithProvider;
 import au.com.dius.pact.consumer.junit.PactVerification;
 import au.com.dius.pact.core.model.RequestResponsePact;
 import au.com.dius.pact.core.model.annotations.Pact;
+import io.restassured.http.ContentType;
 import org.junit.Test;
 
-import javax.ws.rs.HttpMethod;
-import javax.ws.rs.client.Entity;
-import javax.ws.rs.core.Response;
-
-import static org.assertj.core.api.Assertions.assertThat;
+import static io.restassured.RestAssured.given;
+import static org.hamcrest.Matchers.emptyString;
 
 public class UpdatePaymentContract extends PaymentsContract {
 
@@ -21,8 +19,8 @@ public class UpdatePaymentContract extends PaymentsContract {
                 .given("payment exists", "paymentId", PAYMENT_ID)
                 .uponReceiving("update a payment given one with same id already exists")
                 .path(PAYMENTS_BASE_PATH + PAYMENT_ID)
-                .matchHeader("Content-Type", "application/json")
-                .method(HttpMethod.PATCH)
+                .matchHeader("Content-Type", "application/json; charset=UTF-8")
+                .method("PATCH")
                 .body(paymentSchema(PAYMENT_ID))
                 .willRespondWith()
                 .status(204)
@@ -32,12 +30,16 @@ public class UpdatePaymentContract extends PaymentsContract {
     @Test
     @PactVerification(fragment = "updateExistingPaymentContract")
     public void updatesExistingPayment() {
-
-        Response response = paymentsApi().path(PAYMENT_ID)
-                .request().method(HttpMethod.PATCH, Entity.json(TRANSACTION_JSON));
-
-        assertThat(response.getStatus()).isEqualTo(204);
-        assertThat(response.readEntity(String.class)).isEmpty();
+        // @formatter:off
+        given()
+            .contentType(ContentType.JSON)
+            .body(TRANSACTION_JSON)
+        .when()
+            .patch(PAYMENT_ID)
+        .then()
+            .statusCode(204)
+            .body(emptyString());
+        // @formatter:on
     }
 
     @Pact(consumer = CONSUMER)
@@ -45,8 +47,8 @@ public class UpdatePaymentContract extends PaymentsContract {
         return builder
                 .uponReceiving("update a payment given one does not exist")
                 .path(PAYMENTS_BASE_PATH + PAYMENT_ID)
-                .matchHeader("Content-Type", "application/json")
-                .method(HttpMethod.PATCH)
+                .matchHeader("Content-Type", "application/json; charset=UTF-8")
+                .method("PATCH")
                 .body(paymentSchema(PAYMENT_ID))
                 .willRespondWith()
                 .status(404)
@@ -56,12 +58,16 @@ public class UpdatePaymentContract extends PaymentsContract {
     @Test
     @PactVerification(fragment = "notFoundWhenUpdatingNonExistingPaymentContract")
     public void notFoundWhenUpdatingNonExistingPayment() {
-
-        Response response = paymentsApi().path(PAYMENT_ID)
-                .request().method(HttpMethod.PATCH, Entity.json(TRANSACTION_JSON));
-
-        assertThat(response.getStatus()).isEqualTo(404);
-        assertThat(response.readEntity(String.class)).isEmpty();
+        // @formatter:off
+        given()
+            .contentType(ContentType.JSON)
+            .body(TRANSACTION_JSON)
+        .when()
+            .patch(PAYMENT_ID)
+        .then()
+            .statusCode(404)
+            .body(emptyString());
+        // @formatter:on
     }
 
 }

@@ -7,11 +7,7 @@ import au.com.dius.pact.core.model.RequestResponsePact;
 import au.com.dius.pact.core.model.annotations.Pact;
 import org.junit.Test;
 
-import javax.ws.rs.HttpMethod;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
-
-import static org.assertj.core.api.Assertions.assertThat;
+import static io.restassured.RestAssured.given;
 
 public class GetAllPaymentsContract extends PaymentsContract {
 
@@ -22,7 +18,7 @@ public class GetAllPaymentsContract extends PaymentsContract {
                 .uponReceiving("get all payments")
                 .path(PAYMENTS_BASE_PATH)
                 .matchHeader("Accept", "application/json")
-                .method(HttpMethod.GET)
+                .method("GET")
                 .willRespondWith()
                 .status(200)
                 .body(paymentSchema(PAYMENT_ID, new PactDslJsonBody()
@@ -39,9 +35,14 @@ public class GetAllPaymentsContract extends PaymentsContract {
     @Test
     @PactVerification(fragment = "getAllPaymentsContract")
     public void returnsListOfPayments() {
-        Response response = paymentsApi().request(MediaType.APPLICATION_JSON).get();
-
-        assertThat(response.getStatus()).isEqualTo(200);
+        // @formatter:off
+        given()
+            .accept("application/json")
+        .when()
+            .get()
+        .then()
+            .statusCode(200);
+        // @formatter:on
     }
 
     @Pact(consumer = CONSUMER)
@@ -50,7 +51,7 @@ public class GetAllPaymentsContract extends PaymentsContract {
                 .uponReceiving("get all payments when none exist")
                 .path(PAYMENTS_BASE_PATH)
                 .matchHeader("Accept", "application/json")
-                .method(HttpMethod.GET)
+                .method("GET")
                 .willRespondWith()
                 .status(200)
                 .body(new PactDslJsonBody()
@@ -65,9 +66,14 @@ public class GetAllPaymentsContract extends PaymentsContract {
     @Test
     @PactVerification(fragment = "getAllPaymentsWhenNoneExistContract")
     public void returnsEmptyListWhenNoPaymentsExist() {
-        Response response = paymentsApi().request(MediaType.APPLICATION_JSON).get();
-
-        assertThat(response.getStatus()).isEqualTo(200);
+        // @formatter:off
+        given()
+            .accept("application/json")
+        .when()
+            .get()
+        .then()
+            .statusCode(200);
+        // @formatter:on
     }
 
 }

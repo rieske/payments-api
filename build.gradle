@@ -1,7 +1,6 @@
 buildscript {
     ext {
         pactVersion = "4.0.2"
-        jerseyVersion = "2.26"
         cucumberVersion = "4.8.0"
         snippetsDir = file("${buildDir}/generated-snippets")
     }
@@ -106,9 +105,7 @@ dependencies {
     testImplementation("io.cucumber:cucumber-spring:${cucumberVersion}")
 
     consumerContractTestImplementation("au.com.dius:pact-jvm-consumer-junit:${pactVersion}")
-    consumerContractTestImplementation("org.glassfish.jersey.inject:jersey-hk2:${jerseyVersion}")
-    consumerContractTestImplementation("org.glassfish.jersey.connectors:jersey-apache-connector:${jerseyVersion}")
-    consumerContractTestImplementation("org.assertj:assertj-core:3.9.0")
+    consumerContractTestImplementation("io.rest-assured:rest-assured:4.1.2")
     consumerContractTestImplementation("org.slf4j:slf4j-log4j12:1.7.29")
 
     componentTestImplementation("org.testcontainers:testcontainers:1.12.3")
