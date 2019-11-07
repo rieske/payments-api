@@ -1,40 +1,85 @@
 buildscript {
     ext {
-        springCloudVersion = 'Greenwich.RELEASE'
-        lombokVersion = '1.18.8'
-        pactVersion = '3.5.14'
-        jerseyVersion = '2.26'
-        jacksonVersion = '2.9.5'
-        cucumberVersion = '4.8.0'
+        springCloudVersion = "Greenwich.RELEASE"
+        pactVersion = "3.5.14"
+        jerseyVersion = "2.26"
+        jacksonVersion = "2.9.5"
+        cucumberVersion = "4.8.0"
         snippetsDir = file("${buildDir}/generated-snippets")
     }
     repositories {
         mavenCentral()
-        jcenter()
     }
 }
 
 plugins {
-    id 'java'
-    id 'application'
-    id 'org.springframework.boot' version '2.1.3.RELEASE'
-    id 'io.spring.dependency-management' version '1.0.8.RELEASE'
-    id 'org.asciidoctor.convert' version '1.5.6'
-}
-
-
-mainClassName = 'lt.rieske.payments.PaymentsApiApp'
-
-sourceCompatibility = 11
-
-bootJar {
-    archiveName = 'payments-api.jar'
+    id "java"
+    id "org.springframework.boot" version "2.1.3.RELEASE"
+    id "io.spring.dependency-management" version "1.0.8.RELEASE"
+    id "org.asciidoctor.convert" version "1.5.6"
 }
 
 repositories {
     mavenCentral()
-    maven { url 'https://repo.spring.io/libs-milestone' }
-    maven { url 'https://dl.bintray.com/palantir/releases' }
+    maven { url("https://repo.spring.io/libs-milestone") }
+    maven { url("https://dl.bintray.com/palantir/releases") }
+}
+
+sourceSets {
+    consumerContractTest {
+        java.srcDir file("src/consumer-contract-test/java")
+        resources.srcDir file("src/consumer-contract-test/resources")
+    }
+    componentTest {
+        java.srcDir file("src/component-test/java")
+        resources.srcDir file("src/component-test/resources")
+    }
+}
+
+task consumerContractTest(type: Test)
+
+task componentTest(type: Test)
+
+tasks {
+    wrapper {
+        gradleVersion = "5.6.4"
+    }
+
+    java {
+        sourceCompatibility = JavaVersion.VERSION_11
+    }
+
+    bootJar {
+        archiveFileName = "payments-api.jar"
+    }
+
+    asciidoctor {
+        dependsOn(test)
+        outputDir = file("build/docs")
+        backends = ["html5"]
+        sourceDir "src/main/asciidoc"
+        attributes   \
+        "snippets" : snippetsDir ,
+        "toclevels" : 5
+    }
+
+    consumerContractTest {
+        // let"s pretend those come from and are executed somewhere else by our consumer
+        description = "Consumer Driven Contract tests"
+        testClassesDirs = sourceSets.consumerContractTest.output.classesDirs
+        classpath = sourceSets.consumerContractTest.runtimeClasspath
+        systemProperties["pact.rootDir"] = "$buildDir/pacts"
+    }
+
+    componentTest {
+        description = "Component tests"
+        testClassesDirs = sourceSets.componentTest.output.classesDirs
+        classpath = sourceSets.componentTest.runtimeClasspath
+        outputs.upToDateWhen { false }
+    }
+
+    test.dependsOn(consumerContractTest)
+    check.dependsOn(componentTest)
 }
 
 dependencyManagement {
@@ -43,107 +88,56 @@ dependencyManagement {
     }
 }
 
-sourceSets {
-    consumerContractTest {
-        java.srcDir file('src/consumer-contract-test/java')
-        resources.srcDir file('src/consumer-contract-test/resources')
-    }
-    componentTest {
-        java.srcDir file('src/component-test/java')
-        resources.srcDir file('src/component-test/resources')
-    }
-}
-
-configurations {
-    consumerContractTest
-    componentTest
-    apt
-}
-
-task consumerContractTest(type: Test) {
-    // let's pretend those come from and are executed somewhere else by our consumer
-    description = 'Consumer Driven Contract tests'
-    testClassesDirs = sourceSets.consumerContractTest.output.classesDirs
-    classpath = sourceSets.consumerContractTest.runtimeClasspath
-    systemProperties['pact.rootDir'] = "$buildDir/pacts"
-}
-
-task componentTest(type: Test) {
-    description = 'Component tests'
-    testClassesDirs = sourceSets.componentTest.output.classesDirs
-    classpath = sourceSets.componentTest.runtimeClasspath
-    outputs.upToDateWhen { false }
-}
-
-asciidoctor {
-    dependsOn test
-    outputDir = file('build/docs')
-    backends = ['html5']
-    sourceDir 'src/main/asciidoc'
-    attributes \
-      'snippets': snippetsDir,
-      'toclevels': 5
-}
-
 dependencies {
-    annotationProcessor "org.projectlombok:lombok:${lombokVersion}"
+    annotationProcessor("org.projectlombok:lombok:1.18.8")
+    compileOnly("org.projectlombok:lombok:1.18.8")
 
-    asciidoctor "org.springframework.restdocs:spring-restdocs-asciidoctor:2.0.1.RELEASE"
+    implementation("org.springframework.boot:spring-boot-starter-web")
+    implementation("org.springframework.boot:spring-boot-starter-actuator")
+    implementation("org.springframework.boot:spring-boot-starter-data-jpa")
+    implementation("org.springframework.data:spring-data-rest-webmvc")
+    implementation("org.springframework.data:spring-data-rest-hal-browser")
 
-    compileOnly "org.projectlombok:lombok:${lombokVersion}"
+    implementation("org.springframework.cloud:spring-cloud-starter-sleuth")
+    implementation("org.springframework.cloud:spring-cloud-starter-zipkin")
 
-    implementation 'org.springframework.boot:spring-boot-starter-web'
-    implementation 'org.springframework.boot:spring-boot-starter-actuator'
-    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
-    implementation 'org.springframework.data:spring-data-rest-webmvc'
-    implementation 'org.springframework.data:spring-data-rest-hal-browser'
+    implementation("io.micrometer:micrometer-registry-graphite:1.0.1")
+    implementation("net.logstash.logback:logstash-logback-encoder:5.0")
+    implementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310:${jacksonVersion}")
+    implementation("org.apache.commons:commons-lang3:3.6")
 
-    implementation 'org.springframework.cloud:spring-cloud-starter-sleuth'
-    implementation 'org.springframework.cloud:spring-cloud-starter-zipkin'
+    implementation("org.postgresql:postgresql:42.2.2")
+    implementation("org.flywaydb:flyway-core")
 
-    implementation 'io.micrometer:micrometer-registry-graphite:1.0.1'
-    implementation 'net.logstash.logback:logstash-logback-encoder:5.0'
-    implementation "com.fasterxml.jackson.datatype:jackson-datatype-jsr310:${jacksonVersion}"
-    implementation 'org.apache.commons:commons-lang3:3.6'
+    testImplementation("javax.xml.bind:jaxb-api:2.3.0")
+    testImplementation("org.springframework.boot:spring-boot-starter-test")
+    testImplementation("org.springframework.restdocs:spring-restdocs-mockmvc")
+    testImplementation("au.com.dius:pact-jvm-provider-spring_2.12:${pactVersion}")
+    testImplementation("commons-io:commons-io:2.6")
+    testImplementation("org.skyscreamer:jsonassert:1.5.0")
+    testImplementation("com.h2database:h2")
 
-    implementation 'org.postgresql:postgresql:42.2.2'
-    implementation 'org.flywaydb:flyway-core'
+    testImplementation("io.cucumber:cucumber-java8:${cucumberVersion}")
+    testImplementation("io.cucumber:cucumber-junit:${cucumberVersion}")
+    testImplementation("io.cucumber:cucumber-spring:${cucumberVersion}")
 
-    testImplementation 'javax.xml.bind:jaxb-api:2.3.0'
-    testImplementation 'org.springframework.boot:spring-boot-starter-test'
-    testImplementation 'org.springframework.restdocs:spring-restdocs-mockmvc'
-    testImplementation "au.com.dius:pact-jvm-provider-spring_2.12:${pactVersion}"
-    testImplementation 'commons-io:commons-io:2.6'
-    testImplementation 'org.skyscreamer:jsonassert:1.5.0'
-    testImplementation 'com.h2database:h2'
+    consumerContractTestImplementation("au.com.dius:pact-jvm-consumer-junit_2.12:${pactVersion}")
+    consumerContractTestImplementation("org.glassfish.jersey.core:jersey-client:${jerseyVersion}")
+    consumerContractTestImplementation("org.glassfish.jersey.media:jersey-media-json-jackson:${jerseyVersion}")
+    consumerContractTestImplementation("org.glassfish.jersey.inject:jersey-hk2:${jerseyVersion}")
+    consumerContractTestImplementation("org.glassfish.jersey.connectors:jersey-apache-connector:${jerseyVersion}")
+    consumerContractTestImplementation("com.fasterxml.jackson.core:jackson-core:${jacksonVersion}")
+    consumerContractTestImplementation("com.fasterxml.jackson.jaxrs:jackson-jaxrs-json-provider:${jacksonVersion}")
+    consumerContractTestImplementation("org.assertj:assertj-core:3.9.0")
+    consumerContractTestImplementation("org.slf4j:slf4j-log4j12:1.7.29")
+    consumerContractTestImplementation("commons-io:commons-io:2.6")
+    consumerContractTestImplementation("javax.xml.bind:jaxb-api:2.3.0")
 
-    testImplementation "io.cucumber:cucumber-java8:${cucumberVersion}"
-    testImplementation "io.cucumber:cucumber-junit:${cucumberVersion}"
-    testImplementation "io.cucumber:cucumber-spring:${cucumberVersion}"
+    componentTestImplementation("com.palantir.docker.compose:docker-compose-rule-junit4:0.33.0")
+    componentTestImplementation("io.rest-assured:rest-assured:3.0.7")
+    componentTestImplementation("org.slf4j:slf4j-log4j12:1.7.25")
+    componentTestImplementation("commons-logging:commons-logging:1.2")
+    componentTestImplementation("commons-io:commons-io:2.6")
 
-    consumerContractTestImplementation "au.com.dius:pact-jvm-consumer-junit_2.12:${pactVersion}"
-    consumerContractTestImplementation "org.glassfish.jersey.core:jersey-client:${jerseyVersion}"
-    consumerContractTestImplementation "org.glassfish.jersey.media:jersey-media-json-jackson:${jerseyVersion}"
-    consumerContractTestImplementation "org.glassfish.jersey.inject:jersey-hk2:${jerseyVersion}"
-    consumerContractTestImplementation "org.glassfish.jersey.connectors:jersey-apache-connector:${jerseyVersion}"
-    consumerContractTestImplementation "com.fasterxml.jackson.core:jackson-core:${jacksonVersion}"
-    consumerContractTestImplementation "com.fasterxml.jackson.jaxrs:jackson-jaxrs-json-provider:${jacksonVersion}"
-    consumerContractTestImplementation 'org.assertj:assertj-core:3.9.0'
-    consumerContractTestImplementation 'org.slf4j:slf4j-log4j12:1.7.29'
-    consumerContractTestImplementation 'commons-io:commons-io:2.6'
-    consumerContractTestImplementation 'javax.xml.bind:jaxb-api:2.3.0'
-
-    componentTestImplementation 'com.palantir.docker.compose:docker-compose-rule-junit4:0.33.0'
-    componentTestImplementation 'io.rest-assured:rest-assured:3.0.7'
-    componentTestImplementation 'org.slf4j:slf4j-log4j12:1.7.25'
-    componentTestImplementation 'commons-logging:commons-logging:1.2'
-    componentTestImplementation 'commons-io:commons-io:2.6'
-}
-
-test.dependsOn(consumerContractTest)
-componentTest.dependsOn(jar)
-build.dependsOn(componentTest)
-
-wrapper {
-    gradleVersion = '5.6.4'
+    asciidoctor("org.springframework.restdocs:spring-restdocs-asciidoctor:2.0.1.RELEASE")
 }

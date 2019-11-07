@@ -1,7 +1,6 @@
 FROM openjdk:11.0.5-jdk-slim
 
 EXPOSE 8080 1099
-ADD build/libs/*.jar /opt/service/service.jar
 WORKDIR /opt/service
 
 ENTRYPOINT exec java -jar \
@@ -14,3 +13,4 @@ ENTRYPOINT exec java -jar \
             -Dcom.sun.management.jmxremote.rmi.port=${JMX_PORT:-1099} \
             service.jar
 
+ADD build/libs/payments-api.jar /opt/service/service.jar
