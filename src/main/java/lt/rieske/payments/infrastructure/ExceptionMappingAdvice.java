@@ -9,15 +9,15 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
 
 @ControllerAdvice
-public class ExceptionMappingAdvice {
+class ExceptionMappingAdvice {
 
     @ExceptionHandler(BadForexCurrencyException.class)
-    public ResponseEntity<BadRequest> handleBadForexCurrencyException(Exception ex, WebRequest request) {
+    ResponseEntity<BadRequest> handleBadForexCurrencyException(Exception ex, WebRequest request) {
         return ResponseEntity.badRequest().body(new BadRequest(ex.getMessage()));
     }
 
     @ExceptionHandler(ConversionFailedException.class)
-    public ResponseEntity<BadRequest> handleConversionFailedException(Exception ex, WebRequest request) {
+    ResponseEntity<BadRequest> handleConversionFailedException(Exception ex, WebRequest request) {
         return ResponseEntity.badRequest().body(new BadRequest(ex.getCause().getMessage()));
     }
 }

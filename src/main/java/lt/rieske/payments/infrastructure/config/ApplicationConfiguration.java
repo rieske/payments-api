@@ -8,14 +8,13 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import io.micrometer.core.instrument.MeterRegistry;
 import lt.rieske.payments.domain.Payment;
 import lt.rieske.payments.domain.PaymentBusinessRulesValidator;
-import org.apache.commons.lang3.StringUtils;
+import net.logstash.logback.encoder.org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.actuate.autoconfigure.metrics.MeterRegistryCustomizer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.rest.core.config.RepositoryRestConfiguration;
 import org.springframework.data.rest.webmvc.config.RepositoryRestConfigurer;
-import org.springframework.data.rest.webmvc.config.RepositoryRestConfigurerAdapter;
 import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
 
 import java.math.BigDecimal;
@@ -26,7 +25,7 @@ import java.util.Optional;
 public class ApplicationConfiguration {
 
     @Bean
-    public MeterRegistryCustomizer<MeterRegistry> commonTags(@Value("${spring.application.name}") String serviceName) {
+    MeterRegistryCustomizer<MeterRegistry> commonTags(@Value("${spring.application.name}") String serviceName) {
         return r -> r.config().commonTags(
                 serviceName,
                 Optional.ofNullable(System.getenv("JMX_HOSTNAME"))
@@ -35,7 +34,7 @@ public class ApplicationConfiguration {
     }
 
     @Bean
-    public Jackson2ObjectMapperBuilder jacksonBuilder() {
+    Jackson2ObjectMapperBuilder jacksonBuilder() {
         Jackson2ObjectMapperBuilder jacksonBuilder = new Jackson2ObjectMapperBuilder();
         jacksonBuilder.indentOutput(true).dateFormat(new SimpleDateFormat("yyyy-MM-dd"));
 
@@ -49,9 +48,9 @@ public class ApplicationConfiguration {
     }
 
     @Bean
-    public RepositoryRestConfigurer repositoryRestConfigurer() {
+    RepositoryRestConfigurer repositoryRestConfigurer() {
 
-        return new RepositoryRestConfigurerAdapter() {
+        return new RepositoryRestConfigurer() {
 
             @Override
             public void configureRepositoryRestConfiguration(RepositoryRestConfiguration config) {
@@ -61,7 +60,7 @@ public class ApplicationConfiguration {
     }
 
     @Bean
-    public PaymentBusinessRulesValidator paymentEventHandler() {
+    PaymentBusinessRulesValidator paymentEventHandler() {
         return new PaymentBusinessRulesValidator();
     }
 }

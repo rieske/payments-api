@@ -8,7 +8,6 @@ import io.cucumber.datatable.DataTable;
 import lt.rieske.payments.domain.Payment;
 import lt.rieske.payments.domain.PaymentsRepository;
 import org.apache.commons.codec.Charsets;
-import org.apache.commons.io.IOUtils;
 import org.hamcrest.Matchers;
 import org.skyscreamer.jsonassert.JSONAssert;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,6 +21,8 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -215,7 +216,7 @@ public abstract class MockMvcSteps {
     }
 
     private String readFixtureAsString(String fixture) throws IOException {
-        return IOUtils.resourceToString(fixturePath(fixture), Charsets.UTF_8);
+        return Files.readString(Paths.get("src/test/resources/" + fixturePath(fixture)), Charsets.UTF_8);
     }
 
     private String fixturePath(String fixture) {
