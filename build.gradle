@@ -5,7 +5,7 @@ buildscript {
         pactVersion = '3.5.14'
         jerseyVersion = '2.26'
         jacksonVersion = '2.9.5'
-        cucumberVersion = '4.7.1'
+        cucumberVersion = '4.8.0'
         snippetsDir = file("${buildDir}/generated-snippets")
     }
     repositories {
