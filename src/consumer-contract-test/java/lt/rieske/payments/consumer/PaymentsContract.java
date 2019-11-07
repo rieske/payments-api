@@ -3,7 +3,6 @@ package lt.rieske.payments.consumer;
 import au.com.dius.pact.consumer.dsl.PactDslJsonBody;
 import au.com.dius.pact.consumer.junit.PactProviderRule;
 import org.apache.commons.codec.Charsets;
-import org.apache.commons.io.IOUtils;
 import org.glassfish.jersey.apache.connector.ApacheConnectorProvider;
 import org.glassfish.jersey.client.ClientConfig;
 import org.junit.Rule;
@@ -13,6 +12,8 @@ import javax.ws.rs.client.WebTarget;
 import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.net.URI;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 
 public class PaymentsContract {
 
@@ -26,7 +27,7 @@ public class PaymentsContract {
 
     static {
         try {
-            TRANSACTION_JSON = IOUtils.resourceToString("/transaction.json", Charsets.UTF_8);
+            TRANSACTION_JSON = Files.readString(Paths.get("src/consumer-contract-test/resources/transaction.json"), Charsets.UTF_8);
         } catch (IOException e) {
             throw new UncheckedIOException(e);
         }
