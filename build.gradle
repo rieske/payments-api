@@ -4,15 +4,16 @@ buildscript {
         cucumberVersion = "4.8.0"
         snippetsDir = file("${buildDir}/generated-snippets")
     }
-    repositories {
-        mavenCentral()
-    }
 }
 
 plugins {
     id "java"
     id "org.springframework.boot" version "2.2.1.RELEASE"
     id "org.asciidoctor.convert" version "2.3.0"
+}
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_11
 }
 
 repositories {
@@ -36,10 +37,6 @@ task componentTest(type: Test)
 tasks {
     wrapper {
         gradleVersion = "5.6.4"
-    }
-
-    java {
-        sourceCompatibility = JavaVersion.VERSION_11
     }
 
     bootJar {
