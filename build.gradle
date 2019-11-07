@@ -111,5 +111,5 @@ dependencies {
     componentTestImplementation("io.rest-assured:rest-assured:4.1.2")
     componentTestImplementation("org.slf4j:slf4j-log4j12:1.7.25")
 
-    asciidoctor("org.springframework.restdocs:spring-restdocs-asciidoctor:2.0.1.RELEASE")
+    asciidoctor("org.springframework.restdocs:spring-restdocs-asciidoctor:2.0.4.RELEASE")
 }
