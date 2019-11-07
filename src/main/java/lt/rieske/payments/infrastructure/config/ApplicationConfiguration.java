@@ -8,7 +8,7 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import io.micrometer.core.instrument.MeterRegistry;
 import lt.rieske.payments.domain.Payment;
 import lt.rieske.payments.domain.PaymentBusinessRulesValidator;
-import net.logstash.logback.encoder.org.apache.commons.lang.StringUtils;
+import net.logstash.logback.encoder.org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.actuate.autoconfigure.metrics.MeterRegistryCustomizer;
 import org.springframework.context.annotation.Bean;
