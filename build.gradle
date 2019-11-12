@@ -1,6 +1,6 @@
 buildscript {
     ext {
-        pactVersion = "4.0.2"
+        pactVersion = "4.0.3"
         cucumberVersion = "4.8.0"
         snippetsDir = file("${buildDir}/generated-snippets")
     }
