@@ -74,8 +74,8 @@ tasks {
 }
 
 dependencies {
-    annotationProcessor("org.projectlombok:lombok:1.18.10")
-    compileOnly("org.projectlombok:lombok:1.18.8")
+    annotationProcessor("org.projectlombok:lombok:1.18.12")
+    compileOnly("org.projectlombok:lombok:1.18.12")
 
     implementation(platform("org.springframework.boot:spring-boot-dependencies:2.2.3.RELEASE"))
 
