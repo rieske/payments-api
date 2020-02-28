@@ -77,7 +77,7 @@ dependencies {
     annotationProcessor("org.projectlombok:lombok:1.18.12")
     compileOnly("org.projectlombok:lombok:1.18.12")
 
-    implementation(platform("org.springframework.boot:spring-boot-dependencies:2.2.4.RELEASE"))
+    implementation(platform("org.springframework.boot:spring-boot-dependencies:2.2.5.RELEASE"))
 
     implementation("org.springframework.boot:spring-boot-starter-web")
     implementation("org.springframework.boot:spring-boot-starter-actuator")
