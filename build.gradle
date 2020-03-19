@@ -88,7 +88,7 @@ dependencies {
     implementation("io.micrometer:micrometer-registry-graphite")
     implementation("net.logstash.logback:logstash-logback-encoder:6.3")
 
-    implementation("org.postgresql:postgresql:42.2.10")
+    implementation("org.postgresql:postgresql:42.2.11")
     implementation("org.flywaydb:flyway-core")
 
     testImplementation("org.springframework.boot:spring-boot-starter-test")
