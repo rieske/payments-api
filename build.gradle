@@ -86,7 +86,7 @@ dependencies {
     implementation("org.springframework.data:spring-data-rest-hal-browser")
 
     implementation("io.micrometer:micrometer-registry-graphite")
-    implementation("net.logstash.logback:logstash-logback-encoder:6.3")
+    implementation("net.logstash.logback:logstash-logback-encoder:6.4")
 
     implementation("org.postgresql:postgresql:42.2.11")
     implementation("org.flywaydb:flyway-core")
