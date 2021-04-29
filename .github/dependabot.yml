@@ -1,0 +1,48 @@
+version: 2
+updates:
+- package-ecosystem: gradle
+  directory: "/"
+  schedule:
+    interval: daily
+    time: "03:00"
+  open-pull-requests-limit: 10
+  ignore:
+  - dependency-name: org.springframework.boot
+    versions:
+    - 2.4.2
+    - 2.4.3
+    - 2.4.4
+  - dependency-name: io.cucumber:cucumber-spring
+    versions:
+    - 6.10.0
+    - 6.10.1
+    - 6.10.2
+    - 6.9.1
+  - dependency-name: io.cucumber:cucumber-junit
+    versions:
+    - 6.10.0
+    - 6.10.1
+    - 6.10.2
+    - 6.9.1
+  - dependency-name: io.cucumber:cucumber-java8
+    versions:
+    - 6.10.0
+    - 6.10.1
+    - 6.10.2
+    - 6.9.1
+  - dependency-name: org.postgresql:postgresql
+    versions:
+    - 42.2.18
+    - 42.2.19
+  - dependency-name: org.springframework.boot:spring-boot-dependencies
+    versions:
+    - 2.4.2
+    - 2.4.3
+    - 2.4.4
+  - dependency-name: org.testcontainers:testcontainers
+    versions:
+    - 1.15.1
+    - 1.15.2
+  - dependency-name: org.projectlombok:lombok
+    versions:
+    - 1.18.18
